@@ -1,1 +1,3 @@
+# PARA VER LA VERSION DE UN PAQUETE HACED "pip show {nombre_del_paquete}" en la terminal
 pandas = 2.2.3
+openai = 1.60.1
