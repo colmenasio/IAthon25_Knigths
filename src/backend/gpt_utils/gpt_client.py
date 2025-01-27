@@ -1,8 +1,9 @@
 import requests
 import json
-from datetime import datetime
 import ast
 from common.retiable import retriable
+
+from backend.gpt_utils.conversation import Conversation
 
 class OpenAIException(Exception):
     pass
@@ -18,6 +19,7 @@ def get_openai_key() -> str:
     
 
 class GptClient:
+    """Singleton managing api calls and sanitizing I-O"""
 
     _instance = None
 
@@ -35,7 +37,44 @@ class GptClient:
         #    self._is_connected = False
         pass
 
-    def _call_chatgpt(self, 
+
+    def _call_api(self, body, headers) -> requests.Response: 
+        # Send the request to the API
+        try:
+            url = "https://api.openai.com/v1/chat/completions"
+            response = requests.post(url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an error for bad status codes
+        except requests.RequestException as e:
+            raise OpenAIException(f"API request failed: {e}")
+        return response
+     
+
+    def _make_request(self, body, headers) -> str:
+        try:
+            response = self._call_api(body=body, headers=headers)
+            return response.json()["choices"][0]["message"]["content"] 
+        except KeyError:
+            error_message = response.json().get("error", {}).get("message", "Unknown error")
+            raise OpenAIException(f"API response error: {error_message}")
+        except Exception as e:
+            raise OpenAIException(f"Error ocurred when calling the openai api: {e}")
+
+    def _generate_header(self) -> dict:
+        return {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self._key}"
+        }
+    
+    def _generate_body(self, msgs: list, temperature, max_tokens) -> dict:
+        return {
+            "model": "gpt-4o-mini",
+            
+            "messages": msgs,
+            "temperature": temperature,
+            "max_tokens": max_tokens
+        }
+
+    def _produce_completion(self, 
                       system_prompt: str, 
                       user_prompt: str,
                       temperature=0.7, 
@@ -53,42 +92,17 @@ class GptClient:
         Returns:
             str: The content of the response from the API.
         """
-
-        # API endpoint
-        url = "https://api.openai.com/v1/chat/completions"
-        
         # Request payload
-        body = {
-            "model": "gpt-4o-mini",
-            
-            "messages": [{"role": "system", 
-                          "content": system_prompt},
-                         {"role": "user", 
-                          "content": user_prompt}
-                         ],
-            "temperature": temperature,
-            "max_tokens": max_tokens
-        }
+        body = self._generate_body(
+            msgs=[{"role": "system", 
+                   "content": system_prompt},
+                   {"role": "user", 
+                    "content": user_prompt}],
+                    temperature=temperature,
+                    max_tokens=max_tokens)
         
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self._key}"
-        }
-        try:
-            # Send the request to the API
-            response = requests.post(url, headers=headers, json=body)
-            response.raise_for_status()  # Raise an error for bad status codes
-            
-            # Parse and return the content from the response
-            return response.json()["choices"][0]["message"]["content"]
-        
-        except requests.RequestException as e:
-            raise OpenAIException(f"API request failed: {e}")
-        except KeyError:
-            error_message = response.json().get("error", {}).get("message", "Unknown error")
-            raise OpenAIException(f"API response error: {error_message}")
-        except Exception as e:
-            raise OpenAIException(f"Error ocurred when calling the openai api: {e}")
+        headers = self._generate_header()
+        return self._make_request(body=body, headers=headers)
 
     
     @staticmethod
@@ -117,7 +131,7 @@ class GptClient:
         "criteria": {user_prompt}, 
         "options": {possible_outputs}
         }}"""
-        result = self._call_chatgpt(system_prompt, formatted_user_prompt, temperature, max_tokens)
+        result = self._produce_completion(system_prompt, formatted_user_prompt, temperature, max_tokens)
         if result not in possible_outputs:
             raise OpenAIException(f"The result '{result}' is not in the list of possible outputs.")
         return result
@@ -130,7 +144,7 @@ class GptClient:
                             This list should contain at most {max_items} items.\n
                             For example, if the criteria you received was "Produce a list of fruits" your output could be `["peach", "strawberry", "lemon"]`
                             """
-        result = self._call_chatgpt(system_prompt, f'{{"criteria": "{user_prompt}"}}', temperature, max_tokens)
+        result = self._produce_completion(system_prompt, f'{{"criteria": "{user_prompt}"}}', temperature, max_tokens)
         return GptClient._parse_list(result)
     
 
@@ -143,14 +157,49 @@ class GptClient:
         "criteria": {user_prompt}, 
         "options": {possible_outputs}
         }}"""
-        result = self._call_chatgpt(system_prompt, formatted_user_prompt, temperature, max_tokens)
+        result = self._produce_completion(system_prompt, formatted_user_prompt, temperature, max_tokens)
         choices = GptClient._parse_list(result)
         
         # Check if all the results are in the possible outputs set
         possible_outputs_set = set(possible_outputs) 
         if not set(choices).issubset(possible_outputs_set):
             raise OpenAIException(f"One or more responses are not valid. Expected only: {', '.join(possible_outputs)}")
-        return choices 
+        return choices
+
+    @retriable(3, OpenAIException)
+    def from_conversation(self, conversation: Conversation, new_message: str = None) -> str:
+        """Use a previous conversation as a starting point for a request. Automatically Update the Conversation inner state
+        Returns None if failed"""
+        if new_message is not None:
+            conversation.register_user_msg(new_message)
+
+        headers = self._generate_header()
+        body = self._generate_body(
+            msgs=conversation.get_msgs_list(),
+            temperature=0.7,
+            max_tokens=3000
+        )
+        try:
+            response = self._make_request(body=body, headers=headers)
+
+            # Everything went rigth so we update the conversation
+            conversation.register_assistant_msg(response)
+            return response
+        except OpenAIException:
+            raise
+        except Exception as e:
+            if new_message is not None:
+                conversation.rollback_msgs(1)
+            return None 
+
+    @retriable(3, OpenAIException)
+    def produce_completion(self, system_prompt: str, user_prompt: str, temperature=0.7, max_tokens=2000) -> str:
+        return self._produce_completion(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            temperature=temperature,
+            max_tokens=max_tokens
+            )
 
     @retriable(3, OpenAIException)
     def choose_option(self, user_prompt: str, possible_outputs: list, temperature=0.7, max_tokens=2000) -> str:
