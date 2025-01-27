@@ -175,7 +175,7 @@ class GptClient:
 
         headers = self._generate_header()
         body = self._generate_body(
-            msgs=conversation.get_msgs_list(),
+            msgs=conversation.dump_all_msgs(),
             temperature=0.7,
             max_tokens=3000
         )
