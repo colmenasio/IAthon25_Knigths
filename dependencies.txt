@@ -1,0 +1,2 @@
+# PARA VER LA VERSION DE LA LIBRERIA USAR `pip show {Nombre de la libreria}`
+openai=1.60.1
