@@ -167,7 +167,7 @@ class GptClient:
         return choices
 
     @retriable(3, OpenAIException)
-    def from_conversation(self, conversation: Conversation, new_message: str = None) -> str:
+    def continue_conversation(self, conversation: Conversation, new_message: str = None) -> str:
         """Use a previous conversation as a starting point for a request. Automatically Update the Conversation inner state
         Returns None if failed"""
         if new_message is not None:
