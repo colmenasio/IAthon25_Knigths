@@ -2,3 +2,4 @@
 .venv
 data
 config/api_keys.json
+temp
