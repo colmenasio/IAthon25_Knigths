@@ -1,0 +1,326 @@
+[Response]
+ # First, let's check the structure of the dataframe and get basic statistics to understand our data better.
+print(df.info())
+print(df.describe())
+print(df.head())
+
+
+[Std Output]
+ <class 'pandas.core.frame.DataFrame'>
+RangeIndex: 5000 entries, 0 to 4999
+Data columns (total 17 columns):
+ #   Column                        Non-Null Count  Dtype  
+---  ------                        --------------  -----  
+ 0   JAMB_Score                    5000 non-null   int64  
+ 1   Study_Hours_Per_Week          5000 non-null   int64  
+ 2   Attendance_Rate               5000 non-null   int64  
+ 3   Teacher_Quality               5000 non-null   int64  
+ 4   Distance_To_School            5000 non-null   float64
+ 5   School_Type                   5000 non-null   object 
+ 6   School_Location               5000 non-null   object 
+ 7   Extra_Tutorials               5000 non-null   object 
+ 8   Access_To_Learning_Materials  5000 non-null   object 
+ 9   Parent_Involvement            5000 non-null   object 
+ 10  IT_Knowledge                  5000 non-null   object 
+ 11  Student_ID                    5000 non-null   int64  
+ 12  Age                           5000 non-null   int64  
+ 13  Gender                        5000 non-null   object 
+ 14  Socioeconomic_Status          5000 non-null   object 
+ 15  Parent_Education_Level        5000 non-null   object 
+ 16  Assignments_Completed         5000 non-null   int64  
+dtypes: float64(1), int64(7), object(9)
+memory usage: 664.2+ KB
+None
+        JAMB_Score  Study_Hours_Per_Week  Attendance_Rate  ...   Student_ID          Age  Assignments_Completed
+count  5000.000000           5000.000000      5000.000000  ...  5000.000000  5000.000000            5000.000000
+mean    174.074600             19.521200        84.235200  ...  2500.500000    18.445800               1.804600
+std      47.616477              9.634569         9.485688  ...  1443.520003     2.301504               0.992076
+min     100.000000              0.000000        50.000000  ...     1.000000    15.000000               1.000000
+25%     135.000000             13.000000        78.000000  ...  1250.750000    16.000000               1.000000
+50%     170.000000             19.000000        84.000000  ...  2500.500000    18.000000               1.000000
+75%     209.000000             26.000000        91.000000  ...  3750.250000    20.000000               2.000000
+max     367.000000             40.000000       100.000000  ...  5000.000000    22.000000               5.000000
+
+[8 rows x 8 columns]
+   JAMB_Score  Study_Hours_Per_Week  Attendance_Rate  ...  Socioeconomic_Status  Parent_Education_Level Assignments_Completed
+0         192                    22               78  ...                   Low                Tertiary                     2
+1         207                    14               88  ...                  High                    None                     1
+2         182                    29               87  ...                  High                Tertiary                     2
+3         210                    29               99  ...                Medium                Tertiary                     1
+4         199                    12               98  ...                Medium                Tertiary                     1
+
+[5 rows x 17 columns]
+
+
+[Response]
+ # The dataframe has 5000 entries and 17 columns. We have a mix of numerical and categorical data.
+# Let's explore the unique values in the categorical columns to understand the data better.
+
+categorical_columns = df.select_dtypes(include=['object']).columns
+for col in categorical_columns:
+    print(f"Unique values in {col}: {df[col].unique()}")
+
+
+[Std Output]
+ Unique values in School_Type: ['Public' 'Private']
+Unique values in School_Location: ['Urban' 'Rural']
+Unique values in Extra_Tutorials: ['Yes' 'No']
+Unique values in Access_To_Learning_Materials: ['Yes' 'No']
+Unique values in Parent_Involvement: ['High' 'Medium' 'Low']
+Unique values in IT_Knowledge: ['Medium' 'High' 'Low']
+Unique values in Gender: ['Male' 'Female']
+Unique values in Socioeconomic_Status: ['Low' 'High' 'Medium']
+Unique values in Parent_Education_Level: ['Tertiary' 'None' 'Primary' 'Secondary']
+
+
+[Response]
+ # Now I will test the statistical significance of Gender and School_Type on the JAMB_Score.
+# We'll use an independent t-test to see if there's a significant difference in JAMB_Score between Male and Female students.
+# Then, we'll use ANOVA to see if there's a significant difference in JAMB_Score between Public and Private school students.
+
+# Independent t-test for Gender
+male_scores = df[df['Gender'] == 'Male']['JAMB_Score']
+female_scores = df[df['Gender'] == 'Female']['JAMB_Score']
+
+t_statistic_gender, p_value_gender = stats.ttest_ind(male_scores, female_scores)
+
+# ANOVA for School_Type
+public_scores = df[df['School_Type'] == 'Public']['JAMB_Score']
+private_scores = df[df['School_Type'] == 'Private']['JAMB_Score']
+
+f_statistic_school_type, p_value_school_type = stats.f_oneway(public_scores, private_scores)
+
+print(f"T-test results for Gender: t-statistic = {t_statistic_gender}, p-value = {p_value_gender}")
+print(f"ANOVA results for School_Type: F-statistic = {f_statistic_school_type}, p-value = {p_value_school_type}")
+
+
+[Std Output]
+ T-test results for Gender: t-statistic = -1.0349885859156795, p-value = 0.30072431558508816
+ANOVA results for School_Type: F-statistic = 38.38227723182534, p-value = 6.281943063124776e-10
+
+
+[Response]
+ # The results indicate the following:
+# 1. For the Gender variable:
+#    - T-statistic is approximately -1.035.
+#    - P-value is approximately 0.301. 
+#    This suggests that there is no statistically significant difference in JAMB_Score between Male and Female students (commonly, a p-value < 0.05 is considered significant).
+
+# 2. For the School_Type variable:
+#    - F-statistic is approximately 38.38.
+#    - P-value is approximately 6.28e-10. 
+#    This indicates a statistically significant difference in JAMB_Score between students in Public and Private schools.
+
+# Next, I will calculate the means and standard deviations of JAMB_Score for both Gender and School_Type to provide more insight into the differences observed.
+
+mean_scores_gender = df.groupby('Gender')['JAMB_Score'].agg(['mean', 'std'])
+mean_scores_school_type = df.groupby('School_Type')['JAMB_Score'].agg(['mean', 'std'])
+
+print("Mean and standard deviation of JAMB_Score by Gender:")
+print(mean_scores_gender)
+
+print("\nMean and standard deviation of JAMB_Score by School_Type:")
+print(mean_scores_school_type)
+
+
+[Std Output]
+ Mean and standard deviation of JAMB_Score by Gender:
+              mean        std
+Gender                       
+Female  174.763241  47.753673
+Male    173.369231  47.474848
+
+Mean and standard deviation of JAMB_Score by School_Type:
+                   mean        std
+School_Type                       
+Private      181.216601  48.989994
+Public       171.655689  46.902939
+
+
+[Response]
+ # The means and standard deviations of JAMB_Score are as follows:
+
+# For Gender:
+# - Female: Mean = 174.76, Standard Deviation = 47.75
+# - Male: Mean = 173.37, Standard Deviation = 47.47
+
+# For School_Type:
+# - Private: Mean = 181.22, Standard Deviation = 48.99
+# - Public: Mean = 171.66, Standard Deviation = 46.90
+
+# This further reinforces the findings from our previous tests:
+# - There is no significant difference in JAMB_Score between Male and Female students.
+# - There is a significant difference in JAMB_Score between students in Private and Public schools, with Private school students achieving higher average scores.
+
+# Next, let's explore other factors that might influence the JAMB_Score, such as Study_Hours_Per_Week and Attendance_Rate.
+# I will calculate the correlation coefficients for these variables with respect to JAMB_Score.
+
+correlation_study_hours = df['Study_Hours_Per_Week'].corr(df['JAMB_Score'])
+correlation_attendance_rate = df['Attendance_Rate'].corr(df['JAMB_Score'])
+
+print(f"Correlation between Study_Hours_Per_Week and JAMB_Score: {correlation_study_hours}")
+print(f"Correlation between Attendance_Rate and JAMB_Score: {correlation_attendance_rate}")
+
+
+[Std Output]
+ Correlation between Study_Hours_Per_Week and JAMB_Score: 0.4200612209671165
+Correlation between Attendance_Rate and JAMB_Score: 0.28095294426149253
+
+
+[Response]
+ # The correlation coefficients indicate the following:
+
+# 1. The correlation between Study_Hours_Per_Week and JAMB_Score is approximately 0.42, suggesting a moderate positive relationship. This means that, generally, students who study more hours per week tend to have higher JAMB scores.
+
+# 2. The correlation between Attendance_Rate and JAMB_Score is approximately 0.28, indicating a weak to moderate positive relationship. This suggests that students who have higher attendance rates tend to score higher on the JAMB exam, but the relationship is not as strong as that with study hours.
+
+# Next, I will explore how other categorical variables such as Extra_Tutorials, Access_To_Learning_Materials, and Parent_Involvement relate to JAMB_Score by calculating their means.
+
+mean_scores_extra_tutorials = df.groupby('Extra_Tutorials')['JAMB_Score'].mean()
+mean_scores_access_materials = df.groupby('Access_To_Learning_Materials')['JAMB_Score'].mean()
+mean_scores_parent_involvement = df.groupby('Parent_Involvement')['JAMB_Score'].mean()
+
+print("Mean JAMB_Score by Extra_Tutorials:")
+print(mean_scores_extra_tutorials)
+
+print("\nMean JAMB_Score by Access_To_Learning_Materials:")
+print(mean_scores_access_materials)
+
+print("\nMean JAMB_Score by Parent_Involvement:")
+print(mean_scores_parent_involvement)
+
+
+[Std Output]
+ Mean JAMB_Score by Extra_Tutorials:
+Extra_Tutorials
+No     170.566477
+Yes    177.012863
+Name: JAMB_Score, dtype: float64
+
+Mean JAMB_Score by Access_To_Learning_Materials:
+Access_To_Learning_Materials
+No     170.875453
+Yes    175.656007
+Name: JAMB_Score, dtype: float64
+
+Mean JAMB_Score by Parent_Involvement:
+Parent_Involvement
+High      188.826283
+Low       167.253063
+Medium    172.292744
+Name: JAMB_Score, dtype: float64
+
+
+[Response]
+ # The mean JAMB_Score by different categorical variables is as follows:
+
+# 1. **Extra_Tutorials**:
+#   - No: Mean = 170.57
+#   - Yes: Mean = 177.01
+#   This suggests that students who attend extra tutorials tend to score higher on the JAMB exam.
+
+# 2. **Access_To_Learning_Materials**:
+#   - No: Mean = 170.88
+#   - Yes: Mean = 175.66
+#   This indicates that students with access to learning materials also tend to score higher.
+
+# 3. **Parent_Involvement**:
+#   - High: Mean = 188.83
+#   - Medium: Mean = 172.29
+#   - Low: Mean = 167.25
+#   This shows a significant impact of parental involvement, with students whose parents are highly involved scoring much higher on average.
+
+# Next, I will perform a one-way ANOVA test to determine if there's a statistically significant difference in JAMB_Score among the different levels of Parent_Involvement.
+
+high_parent_involvement = df[df['Parent_Involvement'] == 'High']['JAMB_Score']
+medium_parent_involvement = df[df['Parent_Involvement'] == 'Medium']['JAMB_Score']
+low_parent_involvement = df[df['Parent_Involvement'] == 'Low']['JAMB_Score']
+
+f_statistic_parent_involvement, p_value_parent_involvement = stats.f_oneway(high_parent_involvement, medium_parent_involvement, low_parent_involvement)
+
+print(f"ANOVA results for Parent_Involvement: F-statistic = {f_statistic_parent_involvement}, p-value = {p_value_parent_involvement}")
+
+
+[Std Output]
+ ANOVA results for Parent_Involvement: F-statistic = 76.21163905525486, p-value = 2.491538848117176e-33
+
+
+[Response]
+ # The results of the ANOVA test for Parent_Involvement are as follows:
+# - F-statistic is approximately 76.21
+# - P-value is approximately 2.49e-33
+
+# These results indicate a statistically significant difference in JAMB_Score among the different levels of Parent_Involvement, as the p-value is much lower than the commonly used threshold of 0.05.
+
+# Now, let's summarize the findings:
+# 1. **Gender**: No significant difference in JAMB_Score between Male and Female students.
+# 2. **School_Type**: Significant difference in JAMB_Score between Public and Private school students, with Private students scoring higher.
+# 3. **Study_Hours_Per_Week**: Moderate positive correlation with JAMB_Score.
+# 4. **Attendance_Rate**: Weak to moderate positive correlation with JAMB_Score.
+# 5. **Extra_Tutorials**: Students attending extra tutorials scored higher on average.
+# 6. **Access_To_Learning_Materials**: Students with access to learning materials scored higher on average.
+# 7. **Parent_Involvement**: Significant positive impact on JAMB_Score, with higher scores observed for greater parental involvement.
+
+# Finally, I will check for any potential multicollinearity among the numerical predictors using the correlation matrix.
+
+correlation_matrix = df.corr()
+print("\nCorrelation matrix:")
+print(correlation_matrix)
+
+
+[Std Output]
+ could not convert string to float: 'Public'
+
+
+[Response]
+ # The error indicates that there are categorical variables in the dataframe that cannot be converted to float for correlation analysis.
+# I will calculate the correlation matrix only for the numerical columns in the dataframe to avoid this issue.
+
+numerical_columns = df.select_dtypes(include=['int64', 'float64']).columns
+correlation_matrix_numerical = df[numerical_columns].corr()
+
+print("\nCorrelation matrix for numerical columns:")
+print(correlation_matrix_numerical)
+
+
+[Std Output]
+ Correlation matrix for numerical columns:
+                       JAMB_Score  Study_Hours_Per_Week  Attendance_Rate  ...  Student_ID       Age  Assignments_Completed
+JAMB_Score               1.000000              0.420061         0.280953  ...    0.014646 -0.028432               0.278079
+Study_Hours_Per_Week     0.420061              1.000000         0.129738  ...   -0.006420 -0.024121               0.618464
+Attendance_Rate          0.280953              0.129738         1.000000  ...   -0.000136  0.008382               0.087490
+Teacher_Quality          0.299505              0.120297         0.080537  ...   -0.018112 -0.022594               0.068621
+Distance_To_School      -0.094142             -0.022266        -0.057385  ...   -0.019205  0.001874              -0.017597
+Student_ID               0.014646             -0.006420        -0.000136  ...    1.000000  0.015351              -0.015544
+Age                     -0.028432             -0.024121         0.008382  ...    0.015351  1.000000              -0.000127
+Assignments_Completed    0.278079              0.618464         0.087490  ...   -0.015544 -0.000127               1.000000
+
+[8 rows x 8 columns]
+
+
+[Response]
+ # The correlation matrix for numerical columns shows the following relationships:
+
+# - **JAMB_Score** has a moderate positive correlation with:
+#   - Study_Hours_Per_Week (0.42)
+#   - Assignments_Completed (0.28)
+
+# - **Study_Hours_Per_Week** has a strong positive correlation with Assignments_Completed (0.62), indicating that students who complete more assignments tend to study more hours per week.
+
+# - **Attendance_Rate** has a weak positive correlation with JAMB_Score (0.28) and Study_Hours_Per_Week (0.13).
+
+# - **Teacher_Quality** shows a moderate positive correlation with JAMB_Score (0.30).
+
+# - **Distance_To_School** has a weak negative correlation with JAMB_Score (-0.09), suggesting that distance does not have a strong impact on scores.
+
+# - **Age** and **Student_ID** show very weak correlations with JAMB_Score.
+
+# This correlation analysis reinforces the earlier findings regarding factors that might influence JAMB_Score, particularly the impact of study hours and assignments completed.
+
+# Now, I will conclude the analysis and summarize the insights gained from the data.
+
+finish()
+
+
+[Std Output]
+ Exiting Environment

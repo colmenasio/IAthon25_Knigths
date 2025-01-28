@@ -1,0 +1,6 @@
+# PARA VER LA VERSION DE UN PAQUETE HACED "pip show {nombre_del_paquete}" en la terminal
+pandas = 2.2.3
+openai = 1.60.1
+requests = 2.32.3
+numpy = 0
+scipy = 1.15.1

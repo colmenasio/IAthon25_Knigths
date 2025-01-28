@@ -1,1 +1,4 @@
 .vscode
+.venv
+data
+config/api_keys.json
