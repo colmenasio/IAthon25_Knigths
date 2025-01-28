@@ -75,6 +75,8 @@ source .venv/activate.sh
 pip install -r dependencies.txt
 ```
 >>> pandoc and wkhtmltopdf must also be installed for filetype conversion purposes
+>>> a chatgpt API key must be provided in a json file in `IAthon25_Knigths/config/api_keys.json`, under the `openai_key` key
+
 ```bash
 sudo apt install pandoc
 sudo apt install wkhtmltopdf
