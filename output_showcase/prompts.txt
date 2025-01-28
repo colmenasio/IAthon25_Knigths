@@ -1,0 +1,18 @@
+[Collums summary]
+Case [factor]: Train model (“Model 1” or “Model 2”)
+Load [factor]: Passenger load (“AW0” (TARE) or “AW4” (MAX LOAD))
+Configuration [factor]: Train type (“Conf1”, “Conf2” or “Hyb”)
+Wheel Profile [factor]: Wheel profile design criterion (“P1” or “P2”)
+COF [factor]: Coefficient of friction (Dry (“DRY”) or with flange lubrication (“WFL”))
+Track [factor]: Track geometry severity (“1-Low”, “2-Med” or “3-High”)
+Direction [factor]: Travel direction outbound/return (“Unidir” or “Bidir”)
+F_KX1 [continuous]: Design variable 1
+F_KZ1 [continuous]: Design variable 2
+F_KZ2 [continuous]: Design variable 3
+F_S [continuous]: Design variable 4
+max_Z_wear [continuous]: Target KPI (to minimize)
+
+[Guidelines]
+Provide a statistical model of how columns affect the column ` max_Z_wear`.
+Analyze what parameters are most significant and the relevance of each column in the `max_Z_wear`.
+Perform an in-depth analysis on ways to reduce max_Z_wear backed up by a predictive statistical model.

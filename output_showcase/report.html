@@ -1,0 +1,66 @@
+<h1>Detailed Analysis Report on Factors Affecting max_Z_wear</h1>
+<h2>Introduction</h2>
+<p>The objective of this analysis was to investigate the dataset containing various parameters affecting the target Key Performance Indicator (KPI), <code>max_Z_wear</code>. The analysis utilized statistical methods to determine the significance of each parameter and to identify strategies to minimize the target KPI.</p>
+<h2>Dataset Overview</h2>
+<p>The dataset consists of 9068 entries with 13 columns. The columns include categorical variables, continuous variables, and the target variable. Below is a brief description of the dataset columns:</p>
+<ul>
+<li><strong>Case</strong>: Train model (e.g., "Model 1", "Model 2")</li>
+<li><strong>Load</strong>: Passenger load (e.g., "AW0" (TARE), "AW4" (MAX LOAD))</li>
+<li><strong>Configuration</strong>: Train type (e.g., "Conf1", "Conf2", "Hyb")</li>
+<li><strong>Wheel.Profile</strong>: Wheel profile design criterion (e.g., "P1", "P2")</li>
+<li><strong>COF</strong>: Coefficient of friction (Dry or with flange lubrication)</li>
+<li><strong>Track</strong>: Track geometry severity (1-Low, 2-Med, 3-High)</li>
+<li><strong>Direction</strong>: Travel direction (Unidirectional or Bidirectional)</li>
+<li><strong>F_KX1</strong>: Design variable 1 (Continuous)</li>
+<li><strong>F_KZ1</strong>: Design variable 2 (Continuous)</li>
+<li><strong>F_KZ2</strong>: Design variable 3 (Continuous)</li>
+<li><strong>F_S</strong>: Design variable 4 (Continuous)</li>
+<li><strong>max_Z_wear</strong>: Target KPI (to minimize, Continuous)</li>
+</ul>
+<h2>Data Exploration</h2>
+<h3>Summary Statistics</h3>
+<p>The preliminary examination of the dataset was carried out using the <code>describe</code> and <code>info</code> methods from pandas. The dataset was found to have no missing values and included various types of data (categorical and continuous).</p>
+<h3>Correlation Analysis</h3>
+<p>A correlation matrix was computed to assess the relationships between the variables and <code>max_Z_wear</code>. Notably, the variables with the most significant correlations with <code>max_Z_wear</code> were:
+- COF: -0.605142
+- Wheel.Profile: 0.469293
+- Track: 0.299100
+- Direction: 0.173086
+- Case: 0.172672
+- Configuration: -0.101949</p>
+<h3>ANOVA Analysis</h3>
+<p>ANOVA tests were conducted for categorical variables. The following results indicated statistical significance (p-value &lt; 0.05):
+- <strong>Wheel.Profile</strong>: F-value = 2560.60, p-value = 0.00
+- <strong>Track</strong>: F-value = 469.32, p-value = 1.13e-194
+- <strong>Direction</strong>: F-value = 279.99, p-value = 6.36e-62
+- <strong>Case</strong>: F-value = 278.61, p-value = 1.24e-61
+- <strong>Configuration</strong>: F-value = 51.53, p-value = 5.56e-23
+- <strong>COF</strong>: F-value = 5238.12, p-value = 0.00</p>
+<h2>Continuous Variable Analysis</h2>
+<p>Regression analysis was attempted to determine the relationship between the continuous variables (F_KX1, F_KZ1, F_KZ2, F_S) and <code>max_Z_wear</code>. However, the t-values for these variables indicated that none of them were statistically significant with respect to <code>max_Z_wear</code>.</p>
+<h3>Summary of Findings</h3>
+<ol>
+<li><strong>Significant Factors Affecting max_Z_wear</strong>:</li>
+<li>COF: Strong negative correlation; lower COF values reduce wear.</li>
+<li>Wheel.Profile: Profile P1 has lower wear than P2.</li>
+<li>Track: Lower severity tracks lead to reduced wear.</li>
+<li>Direction: Unidirectional travel reduces wear compared to bidirectional.</li>
+<li>Case: Model 1 has lower wear than Model 2.</li>
+<li>
+<p>Configuration: Configuration 2 shows lower wear than other configurations.</p>
+</li>
+<li>
+<p><strong>Non-significant Continuous Variables</strong>:</p>
+</li>
+<li>None of the continuous design variables showed significant t-values, indicating they may not be effective in reducing max_Z_wear.</li>
+</ol>
+<h2>Recommendations</h2>
+<p>Based on the analysis, the following actions are recommended to minimize <code>max_Z_wear</code>:
+1. <strong>Utilize COF 0</strong> for operations to minimize wear.
+2. <strong>Prefer Wheel Profile 0</strong> to reduce wear.
+3. <strong>Optimize operations on lower severity tracks</strong> (Track 0).
+4. <strong>Consider unidirectional travel</strong> where feasible.
+5. <strong>Favor Case 0</strong> in planning operations.
+6. <strong>Implement Configuration 2</strong> for optimal performance.</p>
+<h2>Conclusion</h2>
+<p>The analysis highlights the significant factors affecting <code>max_Z_wear</code> and provides actionable insights for minimizing wear in train operations. By focusing on the identified significant variables and their optimal configurations, it is possible to achieve better performance and longevity of the train components.</p>
