@@ -4,7 +4,7 @@ import PyPDF2
 # from pptx import Presentation
 from bs4 import BeautifulSoup
 import os
-from docx import Document  # For Word document handling
+# from docx import Document  # For Word document handling
 
 from backend.app.app import App
 
@@ -124,7 +124,7 @@ def run_gui(app: App):
     )
 
     # Add logo to the upper left corner
-    logo_path = r"C:/Users/Celia/IAthon25_Knigths/src/frontend/logo_light.png"  # Relative path to the logo in the same folder
+    logo_path = r"assets/logo_light.png"  # Relative path to the logo in the same folder
     st.image(logo_path, use_container_width=True)  # Adjust width as needed
 
     # Sidebar for additional options
@@ -206,18 +206,6 @@ def run_gui(app: App):
                 data = ""
                 for page in range(reader.numPages):
                     data += reader.getPage(page).extract_text()
-            elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-                prs = Presentation(uploaded_file)
-                data = ""
-                for slide in prs.slides:
-                    for shape in slide.shapes:
-                        if hasattr(shape, "text"):
-                            data += shape.text + "\n"
-            elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                doc = Document(uploaded_file)
-                data = ""
-                for para in doc.paragraphs:
-                    data += para.text + "\n"
             analyze_data(data, language, doc_type)
 
             # Set session state to indicate analysis is done
@@ -227,7 +215,7 @@ def run_gui(app: App):
 
     # Add a button to download the generated document
     if st.session_state.analysis_done:
-        html_file = r"C:/Users/Celia/Desktop/IAthon/example.html"
+        html_file = r"C:/Users/Celia/Desktop/IAthon/example.html" # TODO INYECT OUTPUT
         if os.path.exists(html_file):
             with open(html_file, "r", encoding="utf-8") as file:
                 html_content = file.read()
