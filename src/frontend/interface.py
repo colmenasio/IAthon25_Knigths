@@ -4,6 +4,11 @@ import PyPDF2
 from pptx import Presentation
 from bs4 import BeautifulSoup
 import os
+from docx import Document  # For Word document handling
+
+# Initialize session state to track if analysis is done
+if "analysis_done" not in st.session_state:
+    st.session_state.analysis_done = False
 
 logo_path = r"C:/Users/Celia/IAthon25_Knigths/src/frontend/logo_light.png"  # Path to the logo
 
@@ -119,17 +124,17 @@ st.markdown("""
 
 # Add logo to the upper left corner
 logo_path = r"C:/Users/Celia/IAthon25_Knigths/src/frontend/logo_light.png"  # Relative path to the logo in the same folder
-st.image(logo_path, use_container_width = True)  # Adjust width as needed
+st.image(logo_path, use_container_width=True)  # Adjust width as needed
 
 # Sidebar for additional options
 with st.sidebar:
     st.markdown("<h2>Settings</h2>", unsafe_allow_html=True)
     language = st.selectbox("Select the language for analysis", ["English", "Spanish", "French", "German"])
-    doc_type = st.selectbox("Select the document type", ["HTML", "PDF", "PowerPoint"])
+    doc_type = st.selectbox("Select the document type", ["HTML", "PDF", "PowerPoint", "Word"])  # Added "Word" option
 
 # Main content
 st.markdown("### Upload your document", unsafe_allow_html=True)
-uploaded_file = st.file_uploader("", type=['csv', 'xlsx', 'txt', 'html', 'pdf', 'pptx'])
+uploaded_file = st.file_uploader("", type=['csv', 'xlsx', 'txt', 'html', 'pdf', 'pptx', 'docx'])  # Added 'docx'
 
 # Text boxes for description and problem with placeholders
 data_description = st.text_area(
@@ -165,7 +170,7 @@ def save_text_to_file(text, file_name, save_directory):
 # Function to analyze data
 def analyze_data(data, language, doc_type):
     st.success(f"Analysis of {doc_type} document in {language} completed!")
-    st.markdown("### Analysis Results", unsafe_allow_html=True)
+    st.markdown("### Data View", unsafe_allow_html=True)
     if isinstance(data, pd.DataFrame):
         st.write(data.head())  # Display the first few rows for CSV/Excel files
     else:
@@ -177,15 +182,13 @@ if st.button('Analyze Data'):
         # Save the uploaded file locally
         save_directory = "uploaded_files"  # Directory to save the uploaded files
         saved_file_path = save_uploaded_file(uploaded_file, save_directory)
-        st.success(f"File saved successfully at: {saved_file_path}")
 
         # Save the data description and problem statement to text files
         if data_description:
             description_file_path = save_text_to_file(data_description, "data_description.txt", save_directory)
-            st.success(f"Data description saved successfully at: {description_file_path}")
+
         if problem_statement:
             problem_file_path = save_text_to_file(problem_statement, "problem_statement.txt", save_directory)
-            st.success(f"Problem statement saved successfully at: {problem_file_path}")
 
         # Process the file based on its type
         if uploaded_file.type == "text/csv":
@@ -209,6 +212,35 @@ if st.button('Analyze Data'):
                 for shape in slide.shapes:
                     if hasattr(shape, "text"):
                         data += shape.text + "\n"
+        elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            doc = Document(uploaded_file)
+            data = ""
+            for para in doc.paragraphs:
+                data += para.text + "\n"
         analyze_data(data, language, doc_type)
+
+        # Set session state to indicate analysis is done
+        st.session_state.analysis_done = True
     else:
         st.error("Please upload a file to analyze.")
+
+# Add a button to download the generated document
+if st.session_state.analysis_done:
+    html_file = r"C:/Users/Celia/Desktop/IAthon/example.html"
+    if os.path.exists(html_file):
+        with open(html_file, "r", encoding="utf-8") as file:
+            html_content = file.read()
+        
+        # Dynamically set the download button label based on the selected format
+        download_label = f"Download Generated {doc_type}"
+        st.download_button(
+            label=download_label,
+            data=html_content,
+            file_name=f"generated_document.{doc_type.lower()}",  # Set file extension dynamically
+            mime="text/html" if doc_type == "HTML" else 
+                 "application/pdf" if doc_type == "PDF" else 
+                 "application/vnd.openxmlformats-officedocument.presentationml.presentation" if doc_type == "PowerPoint" else 
+                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"  # For Word
+        )
+    else:
+        st.warning("The HTML file does not exist at the specified path.")
