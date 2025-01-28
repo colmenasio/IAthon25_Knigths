@@ -29,5 +29,5 @@ if __name__ == "__main__":
     analysis_env = GptAnalysisEnv(user_prompt=user_prompt)    
     analysis_env.load_dataset("data/jamb_exam_results.csv")
     analysis_env.analyze_dataset(do_log=True)
-    
-    #print(analysis_env.dump_conversation())
+    print(analysis_env.summarize_conversation())
+    print(analysis_env.dump_conversation())
