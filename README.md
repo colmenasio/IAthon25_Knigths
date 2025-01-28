@@ -11,11 +11,14 @@ Summarium bridges the gap between sophisticated data analysis and user accessibi
 This project was developed during the **IAthon 2025 Tecnun Hackathon** by Team **K-Means Knights**.
 
 ### Team Members
-- Scarlete Romero Tipan
-- Nerea Gorrotxategi Vergara
-- Ander Ardanaz
-- Celia Noguerol Puente
-- Alberto Colmenero Fernández
+- GUI & FrontEnd team:
+  - Celia Noguerol Puente
+  - Nerea Gorrotxategi Vergara
+- File Conversion and Prompt engineering team
+  - Ander Ardanaz
+  - Scarlete Romero Tipan
+- Data Analisys engine and Gateways team 
+  - Alberto Colmenero Fernández
 
 ---
 
