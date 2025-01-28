@@ -122,13 +122,14 @@ class GptAnalysisEnv:
     def dump_conversation(self):
         return self._conversation.dump_conversation()
     
-    def summarize_conversation(self):
+    def summarize_conversation(self, language = "english"):
         system_prompt = f"""
         You are a data analyst\n
         Another data analyst was requested to analyze a dataset for you in python using libraries like pandas, scipy, etc...\n
         He, under the role of "system" executed a series of scripts in a python environment. The standard output of said scripts was stored under the role of "user"\n
         Your job is to study the analysis performed, understand what was done and produce a extensive and detailed report of the analysis.\n
         It is vital for your to ensure your report is formatted in markdown format.
+        Finally, generate this markdown report in the following language: {language}.\n
         
         You will be provided the prompt the other analyst received as well as the full analysis performed.
         {{"previous_analyst_prompt": {self._user_prompt}, "full_analysis": {self.dump_conversation()}}} 

@@ -1,9 +1,9 @@
 import markdown
 from backend.gpt_utils.gpt_analysis_env import GptAnalysisEnv
 
-def generate_html(analysis_env: GptAnalysisEnv, output_path: str) -> None:
+def generate_html(analysis_env: GptAnalysisEnv, output_path: str, language = "english") -> None:
     # Contenido en formato Markdown
-    markdown_text = analysis_env.summarize_conversation()
+    markdown_text = analysis_env.summarize_conversation(language)
 
     # Convertir de Markdown a HTML
     html_output = markdown.markdown(markdown_text)

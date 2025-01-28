@@ -211,13 +211,14 @@ def run_gui(app: App):
                 format = Format.POWERPOINT
             case "Word":
                 format = Format.WORD
-            
+        
+        print(language) 
         output_file = app.produce_output(
             format=format,
             language=language
             )
         if os.path.exists(output_file):
-            with open(output_file, "r", encoding="utf-8") as file:
+            with open(output_file, "r", encoding="utf-8", errors="ignore") as file:
                 file_content = file.read()
             
             # Dynamically set the download button label based on the selected format

@@ -9,3 +9,4 @@ bs4 = 0.0.2
 PyPPDF2 = 3.0.1
 docx = 0.2.4
 markdown = 3.7
+pdfkit = 1.0.0
