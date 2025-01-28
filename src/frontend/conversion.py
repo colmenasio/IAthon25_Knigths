@@ -1,116 +1,121 @@
 import os
-import requests
 from docx import Document
+from docx.shared import Pt, RGBColor
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from pptx import Presentation
-from pdfdocument.document import PDFDocument
+from pptx.util import Inches, Pt
 from bs4 import BeautifulSoup
-from io import BytesIO
-from PIL import Image
+import pdfkit
 
-# Ruta del archivo HTML
+# Configuración de rutas
 html_file = r"C:/Users/Celia/Desktop/IAthon/example.html"
+docx_path = 'documento.docx'
+pdf_path = 'documento.pdf'
+ppt_path = 'documento.pptx'
 
-# Abrir y leer el archivo HTML
-with open(html_file, 'r', encoding='utf-8') as file:
-    html_content = file.read()
+# Leer el archivo HTML
+try:
+    with open(html_file, 'r', encoding='utf-8') as file:
+        html_content = file.read()
+except FileNotFoundError:
+    print(f"Error: El archivo HTML '{html_file}' no existe.")
+    exit()
 
-# Procesar el contenido del HTML con BeautifulSoup
+# Procesar el HTML con BeautifulSoup
 soup = BeautifulSoup(html_content, 'html.parser')
 
-#### CONVERSIÓN A WORD ####
-# Crear un nuevo documento de Word
+# Funciones auxiliares para Word
+def apply_heading_style(paragraph, level):
+    """Aplica estilos personalizados a encabezados."""
+    run = paragraph.runs[0]
+    if level == 1:
+        run.font.size = Pt(24)
+        run.font.color.rgb = RGBColor(0, 0, 0)  # Negro
+        run.bold = True
+        paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    elif level == 2:
+        run.font.size = Pt(18)
+        run.font.color.rgb = RGBColor(0, 51, 102)  # Azul oscuro
+        run.bold = True
+    elif level == 3:
+        run.font.size = Pt(14)
+        run.font.color.rgb = RGBColor(0, 102, 204)  # Azul claro
+        run.bold = True
+
+def apply_paragraph_style(paragraph):
+    """Aplica estilos personalizados a los párrafos."""
+    run = paragraph.runs[0]
+    run.font.size = Pt(12)
+    run.font.color.rgb = RGBColor(0, 0, 0)  # Negro
+    paragraph.paragraph_format.space_after = Pt(12)  # Espaciado después del párrafo
+    paragraph.paragraph_format.line_spacing = 1.5  # Espaciado entre líneas
+
+# Crear documento Word
 doc = Document()
-
-# Agregar contenido al documento
 for element in soup.find_all(['h1', 'h2', 'h3', 'p']):
-    if element.name == 'h1':
-        doc.add_heading(element.text, level=1)
-    elif element.name == 'h2':
-        doc.add_heading(element.text, level=2)
-    elif element.name == 'h3':
-        doc.add_heading(element.text, level=3)
+    if element.name in ['h1', 'h2', 'h3']:
+        level = int(element.name[1])
+        paragraph = doc.add_heading(level=level)
+        paragraph.add_run(element.text)
+        apply_heading_style(paragraph, level)
     elif element.name == 'p':
-        doc.add_paragraph(element.text)
+        paragraph = doc.add_paragraph()
+        paragraph.add_run(element.text)
+        apply_paragraph_style(paragraph)
 
-# Agregar imágenes al documento Word
+# Agregar imágenes locales al documento Word
 for img_tag in soup.find_all('img'):
-    img_url = img_tag.get('src')
-    if img_url:
+    img_src = img_tag.get('src')
+    if img_src and not img_src.startswith('http'):
         try:
-            img_data = requests.get(img_url).content
-            img_stream = BytesIO(img_data)
-            doc.add_picture(img_stream)
-        except requests.exceptions.RequestException:
-            print(f"Error al descargar la imagen: {img_url}")
+            doc.add_picture(img_src, width=Inches(4))  # Ajustar tamaño si es necesario
+        except Exception as e:
+            print(f"Error al agregar la imagen local '{img_src}': {e}")
 
-# Guardar el archivo de Word
-docx_path = 'documento.docx'
+# Guardar el documento Word
 if os.path.exists(docx_path):
     os.remove(docx_path)
 doc.save(docx_path)
 print("Documento Word generado correctamente.")
 
-#### CONVERSIÓN A PDF ####
-# Crear un archivo PDF utilizando pdfdocument
-pdf = PDFDocument('documento.pdf')
-pdf.init_report()
+# Conversión a PDF
+try:
+    config = pdfkit.configuration(wkhtmltopdf=r'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
+    if os.path.exists(pdf_path):
+        os.remove(pdf_path)
+    pdfkit.from_string(html_content, pdf_path, configuration=config)
+    print("Documento PDF generado correctamente.")
+except Exception as e:
+    print(f"Error al generar el PDF: {e}")
 
-# Agregar contenido al PDF extraído del HTML
-for element in soup.find_all(['h1', 'h2', 'h3', 'p']):
-    if element.name == 'h1':
-        pdf.h1(element.text)
-    elif element.name == 'h2':
-        pdf.h2(element.text)
-    elif element.name == 'h3':
-        pdf.h3(element.text)
-    elif element.name == 'p':
-        pdf.p(element.text)
-
-# Agregar imágenes al PDF
-for img_tag in soup.find_all('img'):
-    img_url = img_tag.get('src')
-    if img_url:
-        try:
-            img_data = requests.get(img_url).content
-            img_stream = BytesIO(img_data)
-            pdf.image(img_stream, width=200, height=200)  # Ajustar el tamaño si es necesario
-        except requests.exceptions.RequestException:
-            print(f"Error al descargar la imagen: {img_url}")
-
-# Guardar el PDF
-pdf.generate()
-print("PDF generado correctamente.")
-
-#### CONVERSIÓN A PPT ####
-# Crear una presentación PowerPoint
+# Crear presentación PowerPoint
 prs = Presentation()
-slide_layout = prs.slide_layouts[1]  # Diseño de diapositiva con título y contenido
-
-# Agregar contenido a la presentación
 for element in soup.find_all(['h1', 'h2', 'h3', 'p']):
-    slide = prs.slides.add_slide(slide_layout)
-    title = slide.shapes.title
-    content = slide.shapes.placeholders[1]
-
     if element.name == 'h1':
-        title.text = element.text
-    elif element.name == 'h2' or element.name == 'h3' or element.name == 'p':
-        content.text = element.text
+        slide_layout = prs.slide_layouts[0]  # Título
+        slide = prs.slides.add_slide(slide_layout)
+        slide.shapes.title.text = element.text
+    elif element.name == 'h2':
+        slide_layout = prs.slide_layouts[1]  # Título y contenido
+        slide = prs.slides.add_slide(slide_layout)
+        slide.shapes.title.text = element.text
+    elif element.name in ['h3', 'p']:
+        slide_layout = prs.slide_layouts[1]
+        slide = prs.slides.add_slide(slide_layout)
+        content = slide.shapes.placeholders[1]
+        content.text += f"{element.text}\n"  # Agregar texto acumulativo
 
-# Agregar imágenes a las diapositivas
+# Agregar imágenes locales a las diapositivas
 for img_tag in soup.find_all('img'):
-    img_url = img_tag.get('src')
-    if img_url:
+    img_src = img_tag.get('src')
+    if img_src:
         try:
-            img_data = requests.get(img_url).content
-            img_stream = BytesIO(img_data)
-            for slide in prs.slides:
-                slide.shapes.add_picture(img_stream, 50, 50, width=400, height=300)  # Ajustar la posición y tamaño de la imagen
-        except requests.exceptions.RequestException:
-            print(f"Error al descargar la imagen: {img_url}")
+            slide = prs.slides[-1]
+            slide.shapes.add_picture(img_src, Inches(1), Inches(1), width=Inches(4), height=Inches(3))
+        except Exception as e:
+            print(f"Error al agregar imagen en PowerPoint: {e}")
 
-# Guardar el archivo PowerPoint
-ppt_path = 'documento.pptx'
+# Guardar presentación PowerPoint
 if os.path.exists(ppt_path):
     os.remove(ppt_path)
 prs.save(ppt_path)
