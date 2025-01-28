@@ -1,12 +1,10 @@
 import streamlit as st
 import pandas as pd
-import PyPDF2
 # from pptx import Presentation
-from bs4 import BeautifulSoup
 import os
 # from docx import Document  # For Word document handling
 
-from backend.app.app import App
+from backend.app.app import App, Format
 
 def run_gui(app: App):
     # Initialize session state to track if analysis is done
@@ -180,33 +178,22 @@ def run_gui(app: App):
     # Button to perform analysis
     if st.button('Analyze Data'):
         if uploaded_file is not None:
-            # Save the uploaded file locally
-            save_directory = "uploaded_files"  # Directory to save the uploaded files
-            saved_file_path = save_uploaded_file(uploaded_file, save_directory)
-
+             
             # Save the data description and problem statement to text files
-            if data_description:
-                description_file_path = save_text_to_file(data_description, "data_description.txt", save_directory)
-
-            if problem_statement:
-                problem_file_path = save_text_to_file(problem_statement, "problem_statement.txt", save_directory)
+            if not data_description or not problem_statement:
+                raise ValueError("Missing, data")
 
             # Process the file based on its type
             if uploaded_file.type == "text/csv":
                 data = pd.read_csv(uploaded_file)
             elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
                 data = pd.read_excel(uploaded_file)
-            elif uploaded_file.type == "text/plain":
-                data = uploaded_file.read().decode("utf-8")
-            elif uploaded_file.type == "text/html":
-                soup = BeautifulSoup(uploaded_file, 'html.parser')
-                data = soup.get_text()
-            elif uploaded_file.type == "application/pdf":
-                reader = PyPDF2.PdfFileReader(uploaded_file)
-                data = ""
-                for page in range(reader.numPages):
-                    data += reader.getPage(page).extract_text()
-            analyze_data(data, language, doc_type)
+            input_path = "temp/input.csv"
+            data.to_csv(input_path)
+            app.perform_analysis(
+                user_description=data_description,
+                user_request=problem_statement,
+                path_to_csv=input_path)
 
             # Set session state to indicate analysis is done
             st.session_state.analysis_done = True
@@ -214,21 +201,34 @@ def run_gui(app: App):
             st.error("Please upload a file to analyze.")
 
     # Add a button to download the generated document
-    if st.session_state.analysis_done:
-        html_file = r"C:/Users/Celia/Desktop/IAthon/example.html" # TODO INYECT OUTPUT
-        if os.path.exists(html_file):
-            with open(html_file, "r", encoding="utf-8") as file:
-                html_content = file.read()
+    if st.session_state.analysis_done: # This hook makes me want to puke but we dont have time to make it more idiomatic lmao
+        match doc_type:
+            case "HTML":
+                format = Format.HTML
+            case "PDF":
+                format = Format.PDF
+            case "PowerPoint":
+                format = Format.POWERPOINT
+            case "Word":
+                format = Format.WORD
+            
+        output_file = app.produce_output(
+            format=format,
+            language=language
+            )
+        if os.path.exists(output_file):
+            with open(output_file, "r", encoding="utf-8") as file:
+                file_content = file.read()
             
             # Dynamically set the download button label based on the selected format
             download_label = f"Download Generated {doc_type}"
             st.download_button(
                 label=download_label,
-                data=html_content,
-                file_name=f"generated_document.{doc_type.lower()}",  # Set file extension dynamically
+                data=file_content,
+                file_name=f"generated_document.{format.get_extension()}",  # Set file extension dynamically
                 mime="text/html" if doc_type == "HTML" else 
                     "application/pdf" if doc_type == "PDF" else 
-                    "application/vnd.openxmlformats-officedocument.presentationml.presentation" if doc_type == "PowerPoint" else 
+                    # "application/vnd.openxmlformats-officedocument.presentationml.presentation" if doc_type == "PowerPoint" else 
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"  # For Word
             )
         else:
