@@ -203,7 +203,7 @@ class GptClient:
 
     @retriable(3, OpenAIException)
     def choose_option(self, user_prompt: str, possible_outputs: list, temperature=0.7, max_tokens=2000) -> str:
-        return self.choose_option(user_prompt, possible_outputs, temperature, max_tokens)
+        return self._choose_option(user_prompt, possible_outputs, temperature, max_tokens)
     
     @retriable(3, OpenAIException)
     def produce_list(self, user_prompt: str, max_items = 10, temperature=0.7, max_tokens=2000) -> list[str]:
