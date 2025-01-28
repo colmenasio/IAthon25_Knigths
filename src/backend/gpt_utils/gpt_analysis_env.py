@@ -42,7 +42,9 @@ class GptAnalysisEnv:
         self._dataset = None
         self._finish_event = Event()
 
-
+    def is_analyzed(self):
+        return self._finish_event.is_set()
+    
     def load_dataset(self, path):
         # Define a custom converter function
         def custom_converter(val):
@@ -126,6 +128,7 @@ class GptAnalysisEnv:
         Another data analyst was requested to analyze a dataset for you in python using libraries like pandas, scipy, etc...\n
         He, under the role of "system" executed a series of scripts in a python environment. The standard output of said scripts was stored under the role of "user"\n
         Your job is to study the analysis performed, understand what was done and produce a extensive and detailed report of the analysis.\n
+        It is vital for your to ensure your report is formatted in markdown format.
         
         You will be provided the prompt the other analyst received as well as the full analysis performed.
         {{"previous_analyst_prompt": {self._user_prompt}, "full_analysis": {self.dump_conversation()}}} 
@@ -135,4 +138,6 @@ class GptAnalysisEnv:
             system_prompt=system_prompt,
             user_prompt=user_prompt
             )
-    
+        
+    def flush_conversation(self):
+        self._conversation.flush_all_msgs() 
