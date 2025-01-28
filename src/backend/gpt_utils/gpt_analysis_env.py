@@ -16,6 +16,7 @@ class GptAnalysisEnv:
 
     def __init__(self, user_prompt):
         ### DUMMY PROMPT
+        self._user_prompt = user_prompt
         self._conversation =  Conversation(
         f"""
         You are a data analysis tool. There is a dataset stored as a panda dataframe you will have to extract relevant information from.
@@ -118,4 +119,20 @@ class GptAnalysisEnv:
     
     def dump_conversation(self):
         return self._conversation.dump_conversation()
+    
+    def summarize_conversation(self):
+        system_prompt = f"""
+        You are a data analyst\n
+        Another data analyst was requested to analyze a dataset for you in python using libraries like pandas, scipy, etc...\n
+        He, under the role of "system" executed a series of scripts in a python environment. The standard output of said scripts was stored under the role of "user"\n
+        Your job is to study the analysis performed, understand what was done and produce a extensive and detailed report of the analysis.\n
+        
+        You will be provided the prompt the other analyst received as well as the full analysis performed.
+        {{"previous_analyst_prompt": {self._user_prompt}, "full_analysis": {self.dump_conversation()}}} 
+        """
+        user_prompt = "Provide the report of the analysis"
+        return self._gpt_client.produce_completion(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt
+            )
     
