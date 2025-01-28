@@ -28,5 +28,10 @@ class Conversation:
         else:
             self._messages = self._messages[:-rollback_amount]
 
-    def dump_all_msgs(self) -> str:
+    def dump_all_msgs(self) -> list:
+        """Return all messages included System"""
         return [{"role": "system", "content": self._system_msg}]+self._messages
+    
+    def dump_conversation(self) -> list:
+        """Return user and assistant messages"""
+        return self._messages
