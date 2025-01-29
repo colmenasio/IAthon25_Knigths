@@ -20,8 +20,8 @@ class GptAnalysisEnv:
         self._conversation =  Conversation(
         f"""
         You are a data analysis tool. There is a dataset stored as a panda dataframe you will have to extract relevant information from.
-        For this task, a small virtual environment running Python 1.13 has been prepared for you. This environment will contain the panda dataframe in a variable named "df" as well as the following libraries: 
-        pandas as pd; numpy as np; scipy as scipy; scipy.stats as stats. No extra libraries can be imported\n
+        For this task, a small virtual environment running Python 1.13 has been prepared for you. This environment will contain the panda dataframe in a variable named "df" as well as the following pre-imported libraries: 
+        pandas as pd; numpy as np; scipy as scipy; scipy.stats as stats. DO NOT try to import other libraries. Use the pre-imported ones\n
         Finally, your environment contains `finish()` function to signal when you're done with your analysis.
         Every response you produce must be exclusively python code, as it will be executed in the virtual environment we have prepared for you. The standard output of said operation will be shown to you.
         In case en exception occurs, you will be notified, and it will be handled automatically. Afterwards you will be able to continue your analysis.\n
@@ -41,6 +41,7 @@ class GptAnalysisEnv:
         )
         self._dataset = None
         self._finish_event = Event()
+        self._env_context = {"__builtins__": __builtins__, "pd": pd, "np": np, "scipy": scipy,"stats": stats}
 
     def is_analyzed(self):
         return self._finish_event.is_set()
@@ -57,7 +58,8 @@ class GptAnalysisEnv:
             except ValueError:
             # Return the value as a string if conversion fails
                 return str(val) 
-        self._dataset = pd.read_csv(path, converters={col: custom_converter for col in pd.read_csv(path, nrows=0).columns}) 
+        self._dataset = pd.read_csv(path, converters={col: custom_converter for col in pd.read_csv(path, nrows=0).columns})
+        self._env_context["df"] = self._dataset
 
     
     def _parse_executable(self, message: str):
@@ -91,7 +93,7 @@ class GptAnalysisEnv:
         while True:
             # Run the code and capture the updated state or output
             executable_code = self._parse_executable(assistant_response)
-            local_context= {"df": df, "pd": pd, "np": np, "scipy": scipy,"stats": stats, "finish": finish}
+            local_context= {"finish": finish}
             command_output = self._execute_and_capture(executable_code, local_context) 
             if do_log: print(f"[Std Output]\n {command_output}\n\n")
             if self._finish_event.is_set(): break
@@ -104,13 +106,13 @@ class GptAnalysisEnv:
             if do_log: print(f"[Response]\n {assistant_response}\n\n")
 
 
-    def _execute_and_capture(self, code: str, context: dict) -> str:
+    def _execute_and_capture(self, code: str, extra_context: dict) -> str:
         captured_output = io.StringIO()
         with contextlib.redirect_stdout(captured_output):
             # Prepare the execution context (globals and locals)
-            exec_globals = {}
-            if context:
-                exec_globals.update(context)
+            exec_globals = self._env_context # Ensure builtins and such are available
+            if extra_context:
+                exec_globals.update(extra_context)
             try: 
                 exec(code, exec_globals)
             except Exception as e:
