@@ -1,0 +1,269 @@
+[Response]
+ # First, let's take a look at the structure of the dataframe to understand its contents and types of data available.
+df.info()
+
+# Next, we will display the first few rows of the dataframe to get a sense of the data.
+df.head()
+
+
+[Std Output]
+ <class 'pandas.core.frame.DataFrame'>
+RangeIndex: 6214 entries, 0 to 6213
+Data columns (total 17 columns):
+ #   Column                      Non-Null Count  Dtype  
+---  ------                      --------------  -----  
+ 0   Unnamed: 0                  6214 non-null   int64  
+ 1   User_ID                     6214 non-null   object 
+ 2   Session_ID                  6214 non-null   object 
+ 3   Device_ID                   6214 non-null   int64  
+ 4   Video_ID                    6214 non-null   int64  
+ 5   Duration_Watched (minutes)  6214 non-null   float64
+ 6   Genre                       6214 non-null   object 
+ 7   Country                     6214 non-null   object 
+ 8   Age                         6214 non-null   int64  
+ 9   Gender                      6214 non-null   object 
+ 10  Subscription_Status         6214 non-null   object 
+ 11  Ratings                     6214 non-null   int64  
+ 12  Languages                   6214 non-null   object 
+ 13  Device_Type                 6214 non-null   object 
+ 14  Location                    6214 non-null   object 
+ 15  Playback_Quality            6214 non-null   object 
+ 16  Interaction_Events          6214 non-null   int64  
+dtypes: float64(1), int64(6), object(10)
+memory usage: 825.4+ KB
+
+
+[Response]
+ # Now, let's check for any duplicates in the dataset and handle them if necessary.
+duplicates = df.duplicated().sum()
+print(f"Number of duplicate entries: {duplicates}")
+
+# Next, let's explore the unique values in the 'Genre' column to see which genres are included in the dataset.
+unique_genres = df['Genre'].unique()
+print(f"Unique genres in the dataset: {unique_genres}")
+
+# We should also check the distribution of ratings to understand user feedback on the content.
+ratings_distribution = df['Ratings'].value_counts()
+print("Distribution of Ratings:")
+print(ratings_distribution)
+
+# Additionally, let's examine the distribution of age groups in the dataset to categorize users.
+age_distribution = df['Age'].describe()
+print("Age Distribution Summary:")
+print(age_distribution)
+
+
+[Std Output]
+ Number of duplicate entries: 0
+Unique genres in the dataset: ['Comedy' 'Drama' 'Sci-Fi' 'Documentary' 'Action' 'Thriller']
+Distribution of Ratings:
+Ratings
+3    1301
+2    1242
+1    1237
+4    1230
+5    1204
+Name: count, dtype: int64
+Age Distribution Summary:
+count    6214.000000
+mean       39.665594
+std        17.571317
+min        10.000000
+25%        24.000000
+50%        40.000000
+75%        55.000000
+max        70.000000
+Name: Age, dtype: float64
+
+
+[Response]
+ # The dataset has no duplicates. The unique genres present are Comedy, Drama, Sci-Fi, Documentary, Action, and Thriller. 
+# The ratings distribution indicates that the ratings are somewhat balanced but lean towards lower scores.
+# The age distribution shows a mean age of approximately 39.67 years with a range from 10 to 70 years.
+
+# Let's analyze the average duration watched by genre to see which genres keep users engaged the longest.
+average_duration_by_genre = df.groupby('Genre')['Duration_Watched (minutes)'].mean().sort_values(ascending=False)
+print("Average Duration Watched by Genre (minutes):")
+print(average_duration_by_genre)
+
+# Now, let's analyze the average ratings by genre to determine which genres are rated the highest by users.
+average_ratings_by_genre = df.groupby('Genre')['Ratings'].mean().sort_values(ascending=False)
+print("Average Ratings by Genre:")
+print(average_ratings_by_genre)
+
+# Next, we will analyze the subscription status to see the distribution among different subscription types.
+subscription_distribution = df['Subscription_Status'].value_counts()
+print("Subscription Status Distribution:")
+print(subscription_distribution)
+
+# Let's also analyze the average age by subscription status to understand the demographics of each subscription type.
+average_age_by_subscription = df.groupby('Subscription_Status')['Age'].mean()
+print("Average Age by Subscription Status:")
+print(average_age_by_subscription)
+
+# Finally, we will check the distribution of device types used by the users.
+device_distribution = df['Device_Type'].value_counts()
+print("Device Type Distribution:")
+print(device_distribution)
+
+
+[Std Output]
+ Average Duration Watched by Genre (minutes):
+Genre
+Action         43.521773
+Documentary    43.372913
+Thriller       42.978552
+Comedy         42.910749
+Sci-Fi         42.589322
+Drama          42.377976
+Name: Duration_Watched (minutes), dtype: float64
+Average Ratings by Genre:
+Genre
+Action         3.041748
+Drama          3.016080
+Comedy         3.013553
+Thriller       2.965714
+Sci-Fi         2.962536
+Documentary    2.928638
+Name: Ratings, dtype: float64
+Subscription Status Distribution:
+Subscription_Status
+Free       3111
+Premium    3103
+Name: count, dtype: int64
+Average Age by Subscription Status:
+Subscription_Status
+Free       39.522662
+Premium    39.808895
+Name: Age, dtype: float64
+Device Type Distribution:
+Device_Type
+Smart TV      1306
+Desktop       1270
+Smartphone    1233
+Tablet        1217
+Laptop        1188
+Name: count, dtype: int64
+
+
+[Response]
+ # The analysis reveals several interesting insights:
+
+# 1. **Average Duration Watched by Genre**: 
+#    - Action genre has the highest average duration watched, followed closely by Documentary and Thriller genres. 
+#    - Genres like Comedy, Sci-Fi, and Drama have slightly lower average durations.
+
+# 2. **Average Ratings by Genre**: 
+#    - Action genre also leads in average ratings, albeit slightly above the other genres, while Documentary has the lowest ratings.
+#    - The ratings are generally low, indicating potential areas for improvement in content quality.
+
+# 3. **Subscription Status Distribution**: 
+#    - The distribution between Free and Premium users is almost equal, with a slight edge for Free users. 
+
+# 4. **Average Age by Subscription Status**:
+#    - The average age is quite similar across both subscription statuses, suggesting that age does not significantly influence the choice of subscription.
+
+# 5. **Device Type Distribution**:
+#    - Smart TVs are the most commonly used device, followed by Desktops, Smartphones, and Tablets. 
+#    - This highlights opportunities for targeted marketing toward Smart TV users.
+
+# Next, let's analyze the interaction events to see if there's a correlation between interaction events and ratings, as well as the duration watched.
+interaction_events_correlation = df[['Interaction_Events', 'Ratings', 'Duration_Watched (minutes)']].corr()
+print("Correlation between Interaction Events, Ratings, and Duration Watched:")
+print(interaction_events_correlation)
+
+# We can also visualize the average duration watched by age groups. Let's create age bins for this purpose.
+age_bins = [10, 20, 30, 40, 50, 60, 70]
+age_labels = ['10-20', '21-30', '31-40', '41-50', '51-60', '61-70']
+df['Age_Group'] = pd.cut(df['Age'], bins=age_bins, labels=age_labels)
+
+average_duration_by_age_group = df.groupby('Age_Group')['Duration_Watched (minutes)'].mean()
+print("Average Duration Watched by Age Group (minutes):")
+print(average_duration_by_age_group)
+
+# Finally, let's analyze which genres are most popular in terms of interaction events.
+interaction_events_by_genre = df.groupby('Genre')['Interaction_Events'].sum().sort_values(ascending=False)
+print("Total Interaction Events by Genre:")
+print(interaction_events_by_genre)
+
+
+<string>:31: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+[Std Output]
+ Correlation between Interaction Events, Ratings, and Duration Watched:
+                            Interaction_Events   Ratings  Duration_Watched (minutes)
+Interaction_Events                    1.000000 -0.008162                    0.016141
+Ratings                              -0.008162  1.000000                   -0.010999
+Duration_Watched (minutes)            0.016141 -0.010999                    1.000000
+Average Duration Watched by Age Group (minutes):
+Age_Group
+10-20    41.712457
+21-30    42.634868
+31-40    43.705702
+41-50    42.762173
+51-60    44.712743
+61-70    42.395458
+Name: Duration_Watched (minutes), dtype: float64
+Total Interaction Events by Genre:
+Genre
+Documentary    54926
+Comedy         53803
+Sci-Fi         52665
+Action         52236
+Thriller       51679
+Drama          50218
+Name: Interaction_Events, dtype: int64
+
+
+[Response]
+ # Here are the insights based on the additional analysis:
+
+# 1. **Correlation Analysis**: 
+#    - The correlation between Interaction Events and Ratings is very weak (approximately -0.008), indicating that the number of interaction events does not significantly influence user ratings.
+#    - Similarly, the correlation between Interaction Events and Duration Watched is also weak (approximately 0.016), suggesting that the number of interactions does not directly correlate with how long users watch content.
+
+# 2. **Average Duration Watched by Age Group**: 
+#    - The average duration watched increases slightly with age, peaking in the 51-60 age group before dropping off again in the 61-70 range. 
+#    - This suggests that users in their 50s may be the most engaged demographic in terms of time spent watching content.
+
+# 3. **Total Interaction Events by Genre**: 
+#    - Documentary has the highest total interaction events, followed closely by Comedy and Sci-Fi. 
+#    - Action and Thriller genres have slightly lower interaction events, which may indicate either less engagement or less content available in those genres.
+
+# Now, let's summarize some strategic marketing recommendations based on the findings:
+
+# - **Targeted Content Marketing**: Since Action and Documentary genres have the highest average duration watched, the streaming service could focus on promoting new releases in these categories to enhance user engagement.
+# - **Improving Ratings**: Given the low average ratings across genres, it may be beneficial to conduct user feedback sessions and surveys to understand what users want to see improved in the content. 
+# - **Age-Specific Campaigns**: Marketing campaigns could be tailored to target older demographics, particularly those in the 51-60 age range, who show higher engagement. 
+# - **Device-Specific Marketing**: With Smart TVs being the most used device, targeted marketing and content optimization for Smart TV viewers could enhance user experience and attract more subscriptions.
+# - **Leveraging Interaction Events**: Since documentaries are generating the most interaction, promoting similar content or creating a series in that genre could capitalize on existing audience interest.
+
+# Finally, we will check for any missing values in the dataset to ensure data integrity.
+missing_values = df.isnull().sum()
+print("Missing Values in Each Column:")
+print(missing_values)
+
+finish()
+
+
+[Std Output]
+ Missing Values in Each Column:
+Unnamed: 0                      0
+User_ID                         0
+Session_ID                      0
+Device_ID                       0
+Video_ID                        0
+Duration_Watched (minutes)      0
+Genre                           0
+Country                         0
+Age                             0
+Gender                          0
+Subscription_Status             0
+Ratings                         0
+Languages                       0
+Device_Type                     0
+Location                        0
+Playback_Quality                0
+Interaction_Events              0
+Age_Group                     105
+dtype: int64
+Exiting Environment

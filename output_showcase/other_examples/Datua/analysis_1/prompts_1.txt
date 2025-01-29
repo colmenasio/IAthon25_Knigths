@@ -1,0 +1,30 @@
+[Column Explanation]
+This dataset includes the following information for each entry:
+
+    ID: Unique identifier for the TV series.
+    Name: Title of the TV series.
+    Original Name: Original title of the TV series.
+    Overview: Brief summary or description of the TV series.
+    Tagline: Catchphrase or memorable line associated with the TV series (if available).
+    In Production: Indicates whether the TV series is currently in production or
+    Status: Current status of the TV series (e.g., in production, ended, canceled),
+    Original Language: Language in which the TV series was originally
+    Origin Country: Country of origin for the TV
+    Created By: Name(s) of the individual(s) or organization(s) credited with creating the TV
+    First Air Date: Date when the TV series first aired.
+    Last Air Date: Date of the latest episode or season finale.
+    Number of Episodes: Total number of episodes available for the TV series.
+    Number of Seasons: Total number of seasons produced for the TV series.
+    Production Companies: Companies involved in the production of the TV series.
+    Poster Path: URL of the poster image associated with the TV series. The format of the URL is as follows: https://www.themoviedb.org/t/p/w600_and_h900_bestv2/xxxx.jpg.
+    Genres: Genre(s) or category to which the TV series belongs.
+    Vote Average: Average rating given to the TV series by viewers.
+    Vote Count: Total number of votes received for the TV series.
+    Popularity: Popularity score or ranking of the TV series.
+
+Please note that certain fields may be missing for some entries, particularly for older and less well-known TV series, due to limitations within The Movie Database API.
+    
+[Guidelines]
+Perform a statistical analysis over the given dataset to provide insight on the popularity of shows according to genre, age groups, typologies, etc. 
+This insight will be used to take strategic decisions for marketing purposes. Take this in consideration on your analysis.
+Provide in-depth advice on recommended marketing actions for a streaming company according to the data analysis performed on this dataset.

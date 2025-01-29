@@ -1,4 +1,4 @@
-# Result showcase
+# Result showcase for the CAF dataset
 
 In this directory we share results of using Summarium on an arbitrary data set provided during the duration of the Event.
 

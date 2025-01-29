@@ -1,0 +1,57 @@
+[Column Explanation]
+This dataset contains information about students and their performance in the JAMB exam
+
+JAMB_Score
+The score obtained by the student in the JAMB exam
+
+Study_Hours_Per_Week
+The number of hours the student dedicates to studying per week
+
+Attendance_Rate
+The percentage of days the student attended school during the academic year
+
+Teacher_Quality
+The quality of teaching in the school, rated on a scale of 1 to 5
+
+Distance_To_School
+The distance the student travels to get to school, ranging from 0 to 20 km
+
+School_Type
+The type of school the student attends, either 'Public' or 'Private'
+
+School_Location
+The location of the student's school, categorized as either 'Urban' or 'Rural'
+
+Extra_Tutorials
+Indicates whether the student received extra tutorials or coaching session
+
+Access_To_Learning_Materials
+Indicates whether the student has access to learning materials like textbooks and internet resources
+
+Parent_Involvement
+Participation and engagement rate of parents or guardians in the students education
+
+IT knowledge
+Indicates the student's proficiency with using computers, critical for Computer-Based Tests (CBT) like JAMB
+
+Age
+Age of participant
+
+Gender
+Gender of participant
+
+Socioeconomic_Status
+Socioeconomic status of his/her family
+
+Parent education
+The highest education level of the student's parents
+
+Assignments_Completed
+The assignments completion rate of the student
+
+    
+[Guidelines]
+Iteratively analyze the data, perform regressions and tests as necessary to obtain the most relevant factors that affect the JAMB score. Your job is to provide deep insight on how to improve students performance, as well ash share the most limiting factors for students.
+Your insights must be based on the statistical analysis performed on your environment
+Finally, provide advice and suggested course of action on how to improve the scores
+

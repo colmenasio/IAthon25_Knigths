@@ -1,0 +1,595 @@
+[Response]
+ df.info()
+
+df.describe()
+
+
+[Std Output]
+ <class 'pandas.core.frame.DataFrame'>
+RangeIndex: 124716 entries, 0 to 124715
+Data columns (total 40 columns):
+ #   Column                             Non-Null Count   Dtype  
+---  ------                             --------------   -----  
+ 0   Unnamed: 0.2                       124716 non-null  int64  
+ 1   Unnamed: 0.1                       124716 non-null  int64  
+ 2   Unnamed: 0                         124716 non-null  int64  
+ 3   Responsive Search Ad path 2        124716 non-null  object 
+ 4   Responsive Search Ad path 1        124716 non-null  object 
+ 5   Responsive Search Ad headlines     124716 non-null  object 
+ 6   Responsive Search Ad descriptions  124716 non-null  object 
+ 7   Tracking template                  124716 non-null  object 
+ 8   Custom parameter                   124716 non-null  object 
+ 9   Impressions                        124716 non-null  int64  
+ 10  Avg. position                      124716 non-null  object 
+ 11  Approval status                    124716 non-null  object 
+ 12  Review status                      124716 non-null  object 
+ 13  Ad ID                              124716 non-null  int64  
+ 14  Cost                               124716 non-null  int64  
+ 15  Ad group state                     124716 non-null  object 
+ 16  Campaign state                     124716 non-null  object 
+ 17  Campaign                           124716 non-null  object 
+ 18  Policy                             124716 non-null  object 
+ 19  Ad state                           124716 non-null  object 
+ 20  Ad group                           124716 non-null  object 
+ 21  Path 2                             124716 non-null  object 
+ 22  Path 1                             124716 non-null  object 
+ 23  Description                        124716 non-null  object 
+ 24  Total conv. value                  124716 non-null  float64
+ 25  Campaign ID                        124716 non-null  int64  
+ 26  Short headline                     124716 non-null  object 
+ 27  Ad group ID                        124716 non-null  int64  
+ 28  Conversions                        124716 non-null  float64
+ 29  Clicks                             124716 non-null  float64
+ 30  Ad                                 124716 non-null  object 
+ 31  Headline 1                         124716 non-null  object 
+ 32  Headline 2                         124716 non-null  object 
+ 33  Expanded Text Ad Headline 3        124716 non-null  object 
+ 34  Expanded Text Ad Description 2     124716 non-null  object 
+ 35  Display URL                        124716 non-null  object 
+ 36  Destination URL                    124716 non-null  object 
+ 37  Description line 1                 124716 non-null  object 
+ 38  Description line 2                 124716 non-null  object 
+ 39  Final URL                          124716 non-null  object 
+dtypes: float64(3), int64(8), object(29)
+memory usage: 38.1+ MB
+
+
+[Response]
+ print(df['Clicks'].describe())
+print(df['Conversions'].describe())
+print(df['Total conv. value'].describe())
+print(df['Impressions'].describe())
+print(df['Cost'].describe())
+
+# Check for correlation between numeric columns
+correlation_matrix = df[['Clicks', 'Conversions', 'Total conv. value', 'Impressions', 'Cost']].corr()
+print(correlation_matrix)
+
+# Identify best and worst performing ads based on Clicks and Conversions
+best_ads_by_clicks = df.loc[df['Clicks'].idxmax()]
+worst_ads_by_clicks = df.loc[df['Clicks'].idxmin()]
+best_ads_by_conversions = df.loc[df['Conversions'].idxmax()]
+worst_ads_by_conversions = df.loc[df['Conversions'].idxmin()]
+
+print("Best Ad by Clicks:")
+print(best_ads_by_clicks)
+print("Worst Ad by Clicks:")
+print(worst_ads_by_clicks)
+print("Best Ad by Conversions:")
+print(best_ads_by_conversions)
+print("Worst Ad by Conversions:")
+print(worst_ads_by_conversions)
+
+
+[Std Output]
+ count    124716.000000
+mean          0.208891
+std           9.808391
+min           0.000000
+25%           0.000000
+50%           0.000000
+75%           0.000000
+max        1560.000000
+Name: Clicks, dtype: float64
+count    124716.000000
+mean          0.008889
+std           0.370010
+min           0.000000
+25%           0.000000
+50%           0.000000
+75%           0.000000
+max          73.070790
+Name: Conversions, dtype: float64
+count    124716.00000
+mean          0.22223
+std           9.25024
+min           0.00000
+25%           0.00000
+50%           0.00000
+75%           0.00000
+max        1826.76975
+Name: Total conv. value, dtype: float64
+count    124716.000000
+mean          2.737051
+std         193.175346
+min           0.000000
+25%           0.000000
+50%           0.000000
+75%           0.000000
+max       45185.000000
+Name: Impressions, dtype: float64
+count    1.247160e+05
+mean     1.272244e+05
+std      5.429376e+06
+min      0.000000e+00
+25%      0.000000e+00
+50%      0.000000e+00
+75%      0.000000e+00
+max      1.043785e+09
+Name: Cost, dtype: float64
+                     Clicks  Conversions  Total conv. value  Impressions      Cost
+Clicks             1.000000     0.831396           0.831396     0.508274  0.735330
+Conversions        0.831396     1.000000           1.000000     0.375202  0.903581
+Total conv. value  0.831396     1.000000           1.000000     0.375202  0.903581
+Impressions        0.508274     0.375202           0.375202     1.000000  0.346187
+Cost               0.735330     0.903581           0.903581     0.346187  1.000000
+Best Ad by Clicks:
+Unnamed: 0.2                                           33705
+Unnamed: 0.1                                           33705
+Unnamed: 0                                             33705
+Responsive Search Ad path 2                               --
+Responsive Search Ad path 1                               --
+Responsive Search Ad headlines                            --
+Responsive Search Ad descriptions                         --
+Tracking template                                         --
+Custom parameter                                          --
+Impressions                                            11086
+Avg. position                                             --
+Approval status                                     approved
+Review status                                       reviewed
+Ad ID                                           429688949974
+Cost                                               836412289
+Ad group state                                       enabled
+Campaign state                                       enabled
+Campaign                                          DSA Cursos
+Policy                                                    []
+Ad state                                             enabled
+Ad group                             DSA Cursos | Feeds 2023
+Path 2                                                    --
+Path 1                                                    --
+Description                                               --
+Total conv. value                                 1826.76975
+Campaign ID                                        987471276
+Short headline                                            --
+Ad group ID                                      48084948479
+Conversions                                         73.07079
+Clicks                                                1560.0
+Ad                                                          
+Headline 1                                                --
+Headline 2                                                --
+Expanded Text Ad Headline 3                               --
+Expanded Text Ad Description 2                            --
+Display URL                                                 
+Destination URL                                           --
+Description line 1                                        --
+Description line 2                                        --
+Final URL                                                 --
+Name: 33705, dtype: object
+Worst Ad by Clicks:
+Unnamed: 0.2                                                   0
+Unnamed: 0.1                                                   0
+Unnamed: 0                                                     0
+Responsive Search Ad path 2                                   --
+Responsive Search Ad path 1                                   --
+Responsive Search Ad headlines                                --
+Responsive Search Ad descriptions                             --
+Tracking template                                             --
+Custom parameter                                              --
+Impressions                                                    0
+Avg. position                                                 --
+Approval status                                         approved
+Review status                                           reviewed
+Ad ID                                                18236830137
+Cost                                                           0
+Ad group state                                            paused
+Campaign state                                           removed
+Campaign                             ESO-Madrid-Barcelona-Search
+Policy                                                        []
+Ad state                                                 enabled
+Ad group                                       ESO-Madrid-Search
+Path 2                                                        --
+Path 1                                                        --
+Description                                                   --
+Total conv. value                                            0.0
+Campaign ID                                            115006857
+Short headline                                                --
+Ad group ID                                           5543779497
+Conversions                                                  0.0
+Clicks                                                       0.0
+Ad                                     Obtén el Graduado Escolar
+Headline 1                                                    --
+Headline 2                                                    --
+Expanded Text Ad Headline 3                                   --
+Expanded Text Ad Description 2                                --
+Display URL                                 www.consiguelaeso.es
+Destination URL                                               --
+Description line 1                                            --
+Description line 2                                            --
+Final URL                                                     --
+Name: 0, dtype: object
+Best Ad by Conversions:
+Unnamed: 0.2                                           33705
+Unnamed: 0.1                                           33705
+Unnamed: 0                                             33705
+Responsive Search Ad path 2                               --
+Responsive Search Ad path 1                               --
+Responsive Search Ad headlines                            --
+Responsive Search Ad descriptions                         --
+Tracking template                                         --
+Custom parameter                                          --
+Impressions                                            11086
+Avg. position                                             --
+Approval status                                     approved
+Review status                                       reviewed
+Ad ID                                           429688949974
+Cost                                               836412289
+Ad group state                                       enabled
+Campaign state                                       enabled
+Campaign                                          DSA Cursos
+Policy                                                    []
+Ad state                                             enabled
+Ad group                             DSA Cursos | Feeds 2023
+Path 2                                                    --
+Path 1                                                    --
+Description                                               --
+Total conv. value                                 1826.76975
+Campaign ID                                        987471276
+Short headline                                            --
+Ad group ID                                      48084948479
+Conversions                                         73.07079
+Clicks                                                1560.0
+Ad                                                          
+Headline 1                                                --
+Headline 2                                                --
+Expanded Text Ad Headline 3                               --
+Expanded Text Ad Description 2                            --
+Display URL                                                 
+Destination URL                                           --
+Description line 1                                        --
+Description line 2                                        --
+Final URL                                                 --
+Name: 33705, dtype: object
+Worst Ad by Conversions:
+Unnamed: 0.2                                                   0
+Unnamed: 0.1                                                   0
+Unnamed: 0                                                     0
+Responsive Search Ad path 2                                   --
+Responsive Search Ad path 1                                   --
+Responsive Search Ad headlines                                --
+Responsive Search Ad descriptions                             --
+Tracking template                                             --
+Custom parameter                                              --
+Impressions                                                    0
+Avg. position                                                 --
+Approval status                                         approved
+Review status                                           reviewed
+Ad ID                                                18236830137
+Cost                                                           0
+Ad group state                                            paused
+Campaign state                                           removed
+Campaign                             ESO-Madrid-Barcelona-Search
+Policy                                                        []
+Ad state                                                 enabled
+Ad group                                       ESO-Madrid-Search
+Path 2                                                        --
+Path 1                                                        --
+Description                                                   --
+Total conv. value                                            0.0
+Campaign ID                                            115006857
+Short headline                                                --
+Ad group ID                                           5543779497
+Conversions                                                  0.0
+Clicks                                                       0.0
+Ad                                     Obtén el Graduado Escolar
+Headline 1                                                    --
+Headline 2                                                    --
+Expanded Text Ad Headline 3                                   --
+Expanded Text Ad Description 2                                --
+Display URL                                 www.consiguelaeso.es
+Destination URL                                               --
+Description line 1                                            --
+Description line 2                                            --
+Final URL                                                     --
+Name: 0, dtype: object
+
+
+[Response]
+ # Perform additional analysis on the best and worst performing ads
+# Analyze the average cost per click and conversion for the best and worst ads
+avg_cost_per_click_best = best_ads_by_clicks['Cost'] / best_ads_by_clicks['Clicks'] if best_ads_by_clicks['Clicks'] > 0 else 0
+avg_cost_per_conversion_best = best_ads_by_clicks['Cost'] / best_ads_by_clicks['Conversions'] if best_ads_by_clicks['Conversions'] > 0 else 0
+
+avg_cost_per_click_worst = worst_ads_by_clicks['Cost'] / worst_ads_by_clicks['Clicks'] if worst_ads_by_clicks['Clicks'] > 0 else 0
+avg_cost_per_conversion_worst = worst_ads_by_clicks['Cost'] / worst_ads_by_clicks['Conversions'] if worst_ads_by_clicks['Conversions'] > 0 else 0
+
+print("Average Cost per Click for Best Ad by Clicks:", avg_cost_per_click_best)
+print("Average Cost per Conversion for Best Ad by Clicks:", avg_cost_per_conversion_best)
+print("Average Cost per Click for Worst Ad by Clicks:", avg_cost_per_click_worst)
+print("Average Cost per Conversion for Worst Ad by Clicks:", avg_cost_per_conversion_worst)
+
+# Analyze the same metrics for the best and worst ads by conversions
+avg_cost_per_click_best_conv = best_ads_by_conversions['Cost'] / best_ads_by_conversions['Clicks'] if best_ads_by_conversions['Clicks'] > 0 else 0
+avg_cost_per_conversion_best_conv = best_ads_by_conversions['Cost'] / best_ads_by_conversions['Conversions'] if best_ads_by_conversions['Conversions'] > 0 else 0
+
+avg_cost_per_click_worst_conv = worst_ads_by_conversions['Cost'] / worst_ads_by_conversions['Clicks'] if worst_ads_by_conversions['Clicks'] > 0 else 0
+avg_cost_per_conversion_worst_conv = worst_ads_by_conversions['Cost'] / worst_ads_by_conversions['Conversions'] if worst_ads_by_conversions['Conversions'] > 0 else 0
+
+print("Average Cost per Click for Best Ad by Conversions:", avg_cost_per_click_best_conv)
+print("Average Cost per Conversion for Best Ad by Conversions:", avg_cost_per_conversion_best_conv)
+print("Average Cost per Click for Worst Ad by Conversions:", avg_cost_per_click_worst_conv)
+print("Average Cost per Conversion for Worst Ad by Conversions:", avg_cost_per_conversion_worst_conv)
+
+# Analyze the average position of ads
+avg_position = df['Avg. position'].replace({'--': np.nan}).astype(float).mean()
+print("Average Position of Ads:", avg_position)
+
+# Check for ads with high impressions but low clicks or conversions
+low_performance_ads = df[(df['Impressions'] > 1000) & (df['Clicks'] < 10)]
+print("Ads with High Impressions but Low Clicks/Conversions:")
+print(low_performance_ads[['Ad ID', 'Impressions', 'Clicks', 'Conversions']])
+
+
+[Std Output]
+ could not convert string to float: ' --'
+
+
+[Response]
+ df['Avg. position'] = df['Avg. position'].replace({'--': np.nan}) # Replace '--' with NaN
+df['Avg. position'] = pd.to_numeric(df['Avg. position'], errors='coerce') # Convert to numeric
+
+avg_position = df['Avg. position'].mean()
+print("Average Position of Ads:", avg_position)
+
+# Check for ads with high impressions but low clicks or conversions
+low_performance_ads = df[(df['Impressions'] > 1000) & (df['Clicks'] < 10)]
+print("Ads with High Impressions but Low Clicks/Conversions:")
+print(low_performance_ads[['Ad ID', 'Impressions', 'Clicks', 'Conversions']])
+
+
+[Std Output]
+ Average Position of Ads: nan
+Ads with High Impressions but Low Clicks/Conversions:
+              Ad ID  Impressions  Clicks  Conversions
+94938  619126448103         4971     8.0          0.0
+94941  623689154631         1716     4.0          0.0
+94944  623753211085         1959     6.0          0.0
+
+
+[Response]
+ # Investigate the reason for NaN average position
+# Let's check how many NaN values exist in the 'Avg. position' column
+nan_avg_position_count = df['Avg. position'].isna().sum()
+print("Count of NaN values in Avg. position:", nan_avg_position_count)
+
+# Display rows where Avg. position is NaN
+nan_avg_position_rows = df[df['Avg. position'].isna()]
+print("Rows with NaN Avg. position:")
+print(nan_avg_position_rows[['Ad ID', 'Avg. position']])
+
+# Analyze the distribution of clicks and conversions
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(12, 6))
+sns.histplot(df['Clicks'], bins=50, kde=True)
+plt.title('Distribution of Clicks')
+plt.xlabel('Clicks')
+plt.ylabel('Frequency')
+plt.show()
+
+plt.figure(figsize=(12, 6))
+sns.histplot(df['Conversions'], bins=50, kde=True)
+plt.title('Distribution of Conversions')
+plt.xlabel('Conversions')
+plt.ylabel('Frequency')
+plt.show()
+
+# Check the relationship between cost and conversions
+plt.figure(figsize=(12, 6))
+sns.scatterplot(data=df, x='Cost', y='Conversions')
+plt.title('Relationship between Cost and Conversions')
+plt.xlabel('Cost')
+plt.ylabel('Conversions')
+plt.xscale('log')
+plt.yscale('log')
+plt.show()
+
+
+[Std Output]
+ No module named 'seaborn'
+
+
+[Response]
+ # Since seaborn is not available, I'll use matplotlib for visualization.
+# Analyze the distribution of clicks and conversions using matplotlib
+
+plt.figure(figsize=(12, 6))
+plt.hist(df['Clicks'], bins=50, alpha=0.7, color='blue')
+plt.title('Distribution of Clicks')
+plt.xlabel('Clicks')
+plt.ylabel('Frequency')
+plt.grid(axis='y')
+plt.show()
+
+plt.figure(figsize=(12, 6))
+plt.hist(df['Conversions'], bins=50, alpha=0.7, color='green')
+plt.title('Distribution of Conversions')
+plt.xlabel('Conversions')
+plt.ylabel('Frequency')
+plt.grid(axis='y')
+plt.show()
+
+# Check the relationship between cost and conversions using a scatter plot
+plt.figure(figsize=(12, 6))
+plt.scatter(df['Cost'], df['Conversions'], alpha=0.5)
+plt.title('Relationship between Cost and Conversions')
+plt.xlabel('Cost')
+plt.ylabel('Conversions')
+plt.xscale('log')
+plt.yscale('log')
+plt.grid()
+plt.show()
+
+
+[Std Output]
+ name 'plt' is not defined
+
+
+[Response]
+ import matplotlib.pyplot as plt
+
+# Analyze the distribution of clicks and conversions using matplotlib
+plt.figure(figsize=(12, 6))
+plt.hist(df['Clicks'], bins=50, alpha=0.7, color='blue')
+plt.title('Distribution of Clicks')
+plt.xlabel('Clicks')
+plt.ylabel('Frequency')
+plt.grid(axis='y')
+plt.show()
+
+plt.figure(figsize=(12, 6))
+plt.hist(df['Conversions'], bins=50, alpha=0.7, color='green')
+plt.title('Distribution of Conversions')
+plt.xlabel('Conversions')
+plt.ylabel('Frequency')
+plt.grid(axis='y')
+plt.show()
+
+# Check the relationship between cost and conversions using a scatter plot
+plt.figure(figsize=(12, 6))
+plt.scatter(df['Cost'], df['Conversions'], alpha=0.5)
+plt.title('Relationship between Cost and Conversions')
+plt.xlabel('Cost')
+plt.ylabel('Conversions')
+plt.xscale('log')
+plt.yscale('log')
+plt.grid()
+plt.show()
+
+
+[Std Output]
+ No module named 'matplotlib'
+
+
+[Response]
+ # Since I cannot use external libraries for plotting, I will summarize the findings and prepare for further analysis without visualizations.
+
+# Investigating the NaN average position further
+nan_avg_position_count = df['Avg. position'].isna().sum()
+print("Count of NaN values in Avg. position:", nan_avg_position_count)
+
+# Display rows where Avg. position is NaN
+nan_avg_position_rows = df[df['Avg. position'].isna()]
+print("Rows with NaN Avg. position:")
+print(nan_avg_position_rows[['Ad ID', 'Avg. position']])
+
+# Check for other potential issues in the dataset
+# Check for duplicates
+duplicate_ads = df[df.duplicated()]
+print("Duplicate Ads Count:", duplicate_ads.shape[0])
+
+# Check for any unusual values in Clicks, Conversions, and Cost
+unusual_clicks = df[(df['Clicks'] < 0) | (df['Clicks'].isna())]
+unusual_conversions = df[(df['Conversions'] < 0) | (df['Conversions'].isna())]
+unusual_costs = df[(df['Cost'] < 0) | (df['Cost'].isna())]
+
+print("Unusual Clicks Entries:")
+print(unusual_clicks[['Ad ID', 'Clicks']])
+print("Unusual Conversions Entries:")
+print(unusual_conversions[['Ad ID', 'Conversions']])
+print("Unusual Costs Entries:")
+print(unusual_costs[['Ad ID', 'Cost']])
+
+# Perform a more in-depth analysis of ad performance by grouping by campaign
+campaign_performance = df.groupby('Campaign').agg({
+    'Clicks': 'sum',
+    'Conversions': 'sum',
+    'Cost': 'sum',
+    'Total conv. value': 'sum',
+    'Impressions': 'sum'
+}).reset_index()
+
+campaign_performance['CTR'] = campaign_performance['Clicks'] / campaign_performance['Impressions']
+campaign_performance['CPC'] = campaign_performance['Cost'] / campaign_performance['Clicks'].replace(0, np.nan)
+campaign_performance['CPA'] = campaign_performance['Cost'] / campaign_performance['Conversions'].replace(0, np.nan)
+
+print("Campaign Performance Summary:")
+print(campaign_performance.sort_values(by='Clicks', ascending=False)) 
+
+# Suggest potential marketing actions based on performance
+suggested_actions = {
+    "Increase Budget": "For campaigns with high CTR and conversions, consider increasing the budget to maximize reach.",
+    "Analyze Low Performers": "Investigate campaigns with high impressions but low clicks or conversions, and adjust targeting or ad creatives.",
+    "Optimize Ad Copy": "Test different headlines and descriptions for ads with low performance to improve engagement.",
+    "Review Approval Status": "Ensure ads that are disapproved or under review are addressed promptly to avoid lost opportunities."
+}
+
+print("Suggested Marketing Actions:")
+for action, recommendation in suggested_actions.items():
+    print(f"{action}: {recommendation}")
+
+finish()
+
+
+[Std Output]
+ Count of NaN values in Avg. position: 124716
+Rows with NaN Avg. position:
+               Ad ID  Avg. position
+0        18236830137            NaN
+1        18236830257            NaN
+2        18236830377            NaN
+3        18236830497            NaN
+4        18236830617            NaN
+...              ...            ...
+124711  643255579654            NaN
+124712  643255579657            NaN
+124713  643255579645            NaN
+124714  643255579648            NaN
+124715  643255579651            NaN
+
+[124716 rows x 2 columns]
+Duplicate Ads Count: 0
+Unusual Clicks Entries:
+Empty DataFrame
+Columns: [Ad ID, Clicks]
+Index: []
+Unusual Conversions Entries:
+Empty DataFrame
+Columns: [Ad ID, Conversions]
+Index: []
+Unusual Costs Entries:
+Empty DataFrame
+Columns: [Ad ID, Cost]
+Index: []
+Campaign Performance Summary:
+                                              Campaign  Clicks  Conversions  ...       CTR            CPC           CPA
+154                                    DSA Oposiciones  3093.0    35.293063  ...  0.136418  262931.396702  2.304268e+07
+131                              DSA BLOG Delegaciones  2818.0    77.614017  ...  0.102150  227882.693045  8.273936e+06
+152                                       DSA Noticias  2159.0    45.249725  ...  0.127850  182968.967114  8.729998e+06
+136                                         DSA Cursos  2010.0    85.786267  ...  0.131924  524890.728856  1.229836e+07
+130                                           DSA BLOG  1476.0    34.833333  ...  0.121893  173760.162602  7.362775e+06
+..                                                 ...     ...          ...  ...       ...            ...           ...
+216  ES_ESP_Oposiciones Ertzaintza - Google / Searc...     0.0     0.000000  ...       NaN            NaN           NaN
+217  ES_ESP_Oposiciones Mossos D'Esquadra - Google ...     0.0     0.000000  ...       NaN            NaN           NaN
+218  ES_ESP_RR_Máster Calidad, medioambiente, prl -...     0.0     0.000000  ...       NaN            NaN           NaN
+219  ES_ESP_RR_Máster en Publicidad - Google / Sear...     0.0     0.000000  ...       NaN            NaN           NaN
+210  ES_ESP_Máster Laboratorio Clínico - Google / S...     0.0     0.000000  ...       NaN            NaN           NaN
+
+[625 rows x 9 columns]
+Suggested Marketing Actions:
+Increase Budget: For campaigns with high CTR and conversions, consider increasing the budget to maximize reach.
+Analyze Low Performers: Investigate campaigns with high impressions but low clicks or conversions, and adjust targeting or ad creatives.
+Optimize Ad Copy: Test different headlines and descriptions for ads with low performance to improve engagement.
+Review Approval Status: Ensure ads that are disapproved or under review are addressed promptly to avoid lost opportunities.
+Exiting Environment
+

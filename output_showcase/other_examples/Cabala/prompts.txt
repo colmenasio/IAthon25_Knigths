@@ -1,0 +1,58 @@
+[Column Explanation]
+This dataset contais data on the effectiveness of ads of our product, online courses.
+ 
+Below is a brief description of each column you might encounter in a Google Ads Ads report:
+
+    Responsive Search Ad path 2: The second path appended to your display URL in a Responsive Search Ad.
+    Responsive Search Ad path 1: The first path appended to your display URL in a Responsive Search Ad.
+    Responsive Search Ad headlines: A list of headline assets used in your Responsive Search Ads.
+    Responsive Search Ad descriptions: A list of description assets used in your Responsive Search Ads.
+    Tracking template: A URL template to track parameters (e.g., {lpurl}?device={device}).
+    Custom parameter: A custom parameter defined for tracking or other custom logic.
+    Impressions: The number of times your ads were shown to users.
+    Avg. position: The average position of your ads on the search results page.
+    Approval status: Indicates whether your ads are approved, disapproved, etc.
+    Review status: Shows if your ads are under review, approved, or declined after submission.
+    Ad ID: The unique identifier for each ad.
+    Cost: The total amount spent for clicks or impressions. Often reported in micro currency units.
+    Ad group state: The current status of the ad group (e.g., enabled, paused, removed).
+    Campaign state: The current status of the campaign (e.g., enabled, paused, removed).
+    Campaign: The name of the campaign this ad belongs to.
+    Policy: Lists any policy topics or constraints affecting your ad (e.g., trademark, restricted content).
+    Ad state: The state of the ad (enabled, paused, removed).
+    Ad group: The name of the ad group this ad belongs to.
+    Path 2: The second path appended to your display URL (for Expanded Text Ads).
+    Path 1: The first path appended to your display URL (for Expanded Text Ads).
+    Description: The main description field for Expanded Text Ads.
+    Total conv. value: The total value (revenue, ROI, etc.) attributed to the ad conversions.
+    Campaign ID: The unique identifier for the campaign.
+    Short headline: A shorter headline used in certain ad formats (e.g., Responsive Display Ads).
+    Ad group ID: The unique identifier for the ad group.
+    Conversions: The number of conversions (sales, sign-ups, etc.) attributed to this ad.
+    Clicks: The total number of clicks received by the ad.
+    Ad: Text or other reference information about the ad itself (if provided in raw format).
+    Headline 1: The first headline in an Expanded Text Ad.
+    Headline 2: The second headline in an Expanded Text Ad.
+    Expanded Text Ad Headline 3: The optional third headline for Expanded Text Ads.
+    Expanded Text Ad Description 2: The optional second description for Expanded Text Ads.
+    Display URL: The URL shown visually in the ad. May not be the actual destination.
+    Destination URL: The older final or destination URL field (deprecated in favor of Final URL).
+    Description line 1: The first description line in older text ads.
+    Description line 2: The second description line in older text ads.
+    Final URL: The actual landing page URL for the ad.
+
+    
+[Guidelines]
+Perform a statistical analysis over the given dataset to provide insight on the effectiveness of advertisements.
+Using the provided dataset, you must create a report that answers the following important questions:
+
+    Which are the worst and bestperforming ads?
+        Identify the ads with the highest engagement, clicks, and conversions.
+        Provide insights into what may have caused the poor or rich performance.
+    Advanced data analysis.
+    	Feel free to perform in-depth data analysis such as regression and other techinques that might provide useful insight from a marketing perspective
+    Suggested management course of action
+	Provide suggested actions to increase the effectiveness of our advertisements
+
+This insight will be used to take strategic decisions for marketing purposes. Take this in consideration on your analysis. Provide in-depth advice on recommended marketing actions for a streaming company according to the data analysis performed on this dataset.
+

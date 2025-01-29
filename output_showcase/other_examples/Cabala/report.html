@@ -1,0 +1,102 @@
+<h1>Analysis Report on the Effectiveness of Online Course Advertisements</h1>
+<h2>Introduction</h2>
+<p>The dataset provided contains information regarding the effectiveness of advertisements for online courses. The aim of this analysis is to assess the performance of these ads through various metrics, identify the best and worst performing ads, and provide actionable insights for improving advertisement effectiveness.</p>
+<h2>Dataset Overview</h2>
+<p>The dataset consists of 124,716 entries with 40 columns. The key columns relevant for our analysis include:</p>
+<ul>
+<li><strong>Clicks</strong>: Total number of clicks received by the ad.</li>
+<li><strong>Conversions</strong>: Number of conversions (sales, sign-ups, etc.) attributed to the ad.</li>
+<li><strong>Total conv. value</strong>: Total value attributed to ad conversions.</li>
+<li><strong>Impressions</strong>: Number of times ads were shown.</li>
+<li><strong>Cost</strong>: Total amount spent for clicks or impressions.</li>
+</ul>
+<h3>Descriptive Statistics</h3>
+<p>The following statistics summarize the key performance indicators:</p>
+<ul>
+<li><strong>Clicks</strong>: </li>
+<li>Mean: 0.21</li>
+<li>Max: 1560</li>
+<li><strong>Conversions</strong>: </li>
+<li>Mean: 0.0089</li>
+<li>Max: 73.07</li>
+<li><strong>Total conv. value</strong>: </li>
+<li>Mean: 0.22</li>
+<li>Max: 1826.77</li>
+<li><strong>Impressions</strong>: </li>
+<li>Mean: 2.74</li>
+<li>Max: 45185</li>
+<li><strong>Cost</strong>: </li>
+<li>Mean: 127,224.4</li>
+<li>Max: 1,043,785,000</li>
+</ul>
+<h3>Correlation Analysis</h3>
+<p>A correlation matrix was computed for numerical columns, revealing notable relationships:
+- Clicks and Conversions have a strong positive correlation (0.83).
+- Cost shows a strong correlation with both Conversions (0.90) and Total conv. value (0.90).</p>
+<h2>Identifying Best and Worst Performing Ads</h2>
+<h3>Best Performing Ads</h3>
+<ul>
+<li><strong>Best Ad by Clicks</strong>: </li>
+<li>Ad ID: 429688949974</li>
+<li>Clicks: 1560</li>
+<li>Conversions: 73</li>
+<li>Total conv. value: 1826.77</li>
+<li>
+<p>Cost: 836,412,289</p>
+</li>
+<li>
+<p><strong>Best Ad by Conversions</strong>: </p>
+</li>
+<li>Same as above.</li>
+</ul>
+<h3>Worst Performing Ads</h3>
+<ul>
+<li><strong>Worst Ad by Clicks</strong>: </li>
+<li>Ad ID: 18236830137</li>
+<li>Clicks: 0</li>
+<li>Conversions: 0</li>
+<li>Total conv. value: 0</li>
+<li>
+<p>Cost: 0</p>
+</li>
+<li>
+<p><strong>Worst Ad by Conversions</strong>: </p>
+</li>
+<li>Same as above.</li>
+</ul>
+<h3>Performance Insights</h3>
+<ul>
+<li>The best-performing ad had a high number of clicks and conversions, indicating effective engagement.</li>
+<li>The worst-performing ad had zero clicks and zero conversions, suggesting that it may not have reached the target audience effectively or lacked compelling content.</li>
+</ul>
+<h2>Advanced Data Analysis</h2>
+<h3>Cost Analysis</h3>
+<ul>
+<li>The average cost per click and conversion was computed for both the best and worst ads. </li>
+<li><strong>Best Ad by Clicks</strong>:</li>
+<li>Average Cost per Click: 535,925.78</li>
+<li>
+<p>Average Cost per Conversion: 11,446.88</p>
+</li>
+<li>
+<p><strong>Worst Ad by Clicks</strong>:</p>
+</li>
+<li>Both metrics are undefined, as there were no clicks or conversions.</li>
+</ul>
+<h3>Average Position Analysis</h3>
+<p>The average position of ads was calculated, but it resulted in NaN due to invalid entries in the dataset. This indicates that some ads may not have been displayed correctly.</p>
+<h3>High Impressions, Low Clicks/Conversions</h3>
+<p>Ads with high impressions but low engagement were identified:
+- <strong>Ad ID 619126448103</strong>: 4971 impressions, 8 clicks, 0 conversions.
+- <strong>Ad ID 623689154631</strong>: 1716 impressions, 4 clicks, 0 conversions.</p>
+<p>These ads may require further investigation to understand the underlying issues, such as targeting or content quality.</p>
+<h2>Suggested Management Course of Action</h2>
+<p>Based on the analysis, the following actions are recommended:</p>
+<ol>
+<li><strong>Increase Budget</strong>: For campaigns with high CTR and conversions, consider increasing the budget to maximize reach.</li>
+<li><strong>Analyze Low Performers</strong>: Investigate campaigns with high impressions but low clicks or conversions, and adjust targeting or ad creatives.</li>
+<li><strong>Optimize Ad Copy</strong>: Test different headlines and descriptions for ads with low performance to improve engagement.</li>
+<li><strong>Review Approval Status</strong>: Ensure ads that are disapproved or under review are addressed promptly to avoid lost opportunities.</li>
+</ol>
+<h2>Conclusion</h2>
+<p>This analysis offers a comprehensive overview of ad performance, highlighting both strengths and weaknesses. By implementing the suggested actions, the effectiveness of advertisements for online courses can be enhanced, ultimately leading to improved conversion rates and revenue generation. Further analysis could include A/B testing of different ad creatives and more granular targeting strategies to refine advertisement performance.</p>

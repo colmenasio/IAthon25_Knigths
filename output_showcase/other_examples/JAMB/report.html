@@ -1,0 +1,96 @@
+<h1>Analysis Report: Factors Affecting JAMB Exam Performance</h1>
+<h2>Dataset Overview</h2>
+<p>The dataset comprises information about students and their performance in the JAMB exam. It includes various factors that may influence their scores, such as study habits, school environment, and parental involvement. The dataset contains the following columns:</p>
+<ul>
+<li><strong>JAMB_Score</strong>: The score obtained by the student in the JAMB exam.</li>
+<li><strong>Study_Hours_Per_Week</strong>: The number of hours the student dedicates to studying per week.</li>
+<li><strong>Attendance_Rate</strong>: The percentage of days the student attended school.</li>
+<li><strong>Teacher_Quality</strong>: The quality of teaching, rated on a scale of 1 to 5.</li>
+<li><strong>Distance_To_School</strong>: Distance traveled to school (0 to 20 km).</li>
+<li><strong>School_Type</strong>: Type of school (Public or Private).</li>
+<li><strong>School_Location</strong>: Location of the school (Urban or Rural).</li>
+<li><strong>Extra_Tutorials</strong>: Whether the student received extra tutorials or coaching.</li>
+<li><strong>Access_To_Learning_Materials</strong>: Access to learning materials like textbooks and internet resources.</li>
+<li><strong>Parent_Involvement</strong>: Engagement rate of parents in the student's education.</li>
+<li><strong>IT_Knowledge</strong>: Proficiency with computers relevant for Computer-Based Tests (CBT).</li>
+<li><strong>Age</strong>: Age of the student.</li>
+<li><strong>Gender</strong>: Gender of the student.</li>
+<li><strong>Socioeconomic_Status</strong>: Family socioeconomic status.</li>
+<li><strong>Parent_Education</strong>: Highest education level of the student's parents.</li>
+<li><strong>Assignments_Completed</strong>: Rate of assignment completion by the student.</li>
+</ul>
+<h2>Data Exploration</h2>
+<ol>
+<li>
+<p><strong>Initial Data Inspection</strong>:
+   The first five rows of the dataset were displayed to understand its structure and content.</p>
+</li>
+<li>
+<p><strong>Summary Statistics</strong>:
+   Summary statistics were generated to observe the distribution of numerical features, revealing key insights into the central tendencies and variances of the data.</p>
+</li>
+<li>
+<p><strong>Missing Values Check</strong>:
+   A check for missing values confirmed that there were no missing entries in the dataset, ensuring data completeness.</p>
+</li>
+</ol>
+<h2>Correlation Analysis</h2>
+<ol>
+<li>
+<p><strong>Correlation Matrix</strong>:
+   A correlation analysis was conducted to identify relationships between the JAMB score and other numerical features. Initially, categorical variables hindered the correlation calculations.</p>
+</li>
+<li>
+<p><strong>Encoding Categorical Variables</strong>:
+   Categorical variables such as school type, location, and parental education were converted to numeric using one-hot encoding, allowing for a comprehensive correlation analysis.</p>
+</li>
+<li>
+<p><strong>Results</strong>:
+   The correlation matrix revealed the following significant correlations with the JAMB Score:</p>
+</li>
+<li>
+<p><strong>Positive Correlations</strong>:</p>
+<ul>
+<li><strong>Study_Hours_Per_Week</strong>: 0.420</li>
+<li><strong>Teacher_Quality</strong>: 0.300</li>
+<li><strong>Attendance_Rate</strong>: 0.281</li>
+<li><strong>Assignments_Completed</strong>: 0.278</li>
+</ul>
+</li>
+<li>
+<p><strong>Negative Correlations</strong>:</p>
+<ul>
+<li><strong>Socioeconomic_Status (Low)</strong>: -0.156</li>
+<li><strong>Distance_To_School</strong>: -0.094</li>
+<li><strong>School_Type (Public)</strong>: -0.087</li>
+</ul>
+</li>
+</ol>
+<h2>Visualization</h2>
+<p>Due to the absence of certain libraries for visualization, a simpler textual representation of the top positive and negative correlations was provided, summarizing the findings effectively.</p>
+<h2>Key Insights</h2>
+<h3>Factors Positively Correlating with JAMB Score:</h3>
+<ol>
+<li><strong>Study Hours Per Week</strong>: Significant positive effect; increased study time is likely to improve performance.</li>
+<li><strong>Teacher Quality</strong>: High-quality teaching correlates with better scores; teacher training is essential.</li>
+<li><strong>Attendance Rate</strong>: Regular attendance is crucial for performance; strategies to enhance attendance should be considered.</li>
+<li><strong>Assignments Completed</strong>: Higher completion rates are linked to better scores; structured support can aid completion.</li>
+</ol>
+<h3>Factors Negatively Correlating with JAMB Score:</h3>
+<ol>
+<li><strong>Socioeconomic Status (Low)</strong>: Indicates that students from lower socioeconomic backgrounds may struggle; providing resources could help.</li>
+<li><strong>Distance To School</strong>: Longer distances negatively impact students; considering transportation solutions may mitigate this.</li>
+<li><strong>School Type (Public)</strong>: Slightly negative correlation; focus on improving public school resources is necessary.</li>
+</ol>
+<h2>Recommendations for Improvement</h2>
+<ol>
+<li><strong>Encourage Study Habits</strong>: Develop programs that promote effective study habits and time management.</li>
+<li><strong>Invest in Teacher Development</strong>: Provide ongoing training and support for teachers to enhance educational quality.</li>
+<li><strong>Enhance Attendance</strong>: Implement initiatives to improve attendance, such as mentorship programs and parental engagement.</li>
+<li><strong>Support Assignment Completion</strong>: Create a structured approach to support students in completing assignments.</li>
+<li><strong>Increase Parental Engagement</strong>: Foster better communication with parents to get them involved in their children's education.</li>
+<li><strong>Integrate IT Training</strong>: Provide resources and training for enhancing students' IT knowledge to prepare them for Computer-Based Tests.</li>
+</ol>
+<h2>Conclusion</h2>
+<p>The analysis has highlighted key factors affecting JAMB exam performance, offering actionable insights to help improve student outcomes. By focusing on enhancing study habits, teacher quality, attendance, and parental involvement, educational institutions can work towards achieving better performance in the JAMB exam.</p>
+<p><strong>Next Steps</strong>: Further analysis through regression models could quantify the influence of these factors more formally, but the current findings already provide a strong foundation for strategic interventions.</p>
